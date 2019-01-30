@@ -1,0 +1,34 @@
+.listing-panel {
+  .search-panel {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    position: relative;
+    input {
+      font-family: robotolight;
+      font-size: 23px;
+      border: 1px solid #000000;
+    }
+    img {
+      position: absolute;
+      left: 234px;
+      height: 24px;
+    }
+  }
+
+  .assestments{
+
+    .assestment__type{
+      background-color: #0f9014;
+      color:#ffffff;
+    }
+
+
+    .expander{
+      background-color: #005181;
+      padding: 8px 0;
+    }
+  }
+
+
+}

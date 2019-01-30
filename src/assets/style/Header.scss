@@ -1,18 +1,20 @@
+.header-panel {
+  font-size: 20px;
+  padding: 20px 0;
 
+  .user_name {
+    font-weight: bold;
+    padding-left: 10px;
+  }
 
+  .user-panel {
+    display: flex;
+    justify-content: space-around;
 
-.header-panel{
-    font-size: 20px;
-    padding: 20px 0;
-    
-
-    .user_name{
-      font-weight: bold;
-      padding-left: 10px;
+    img {
+      height: 14px;
+      margin: 0 10px;
     }
+  }
 
-    .user-panel{
-        display:flex;
-        justify-content: space-around;
-    }
 }

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import jobdetail from './jobTableReducer';
+import assesmentdetails from './assesments.reducer';
 import ajaxStatus from './ajaxStatus.reducer';
 
 
 export default combineReducers({
-  jobdetail,
+  assesmentdetails,
   ajaxStatus
 });

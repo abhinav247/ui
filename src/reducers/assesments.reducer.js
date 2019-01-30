@@ -1,19 +1,20 @@
-import { NEW_JOB, NEW_EVENT, GET_ALL_JOBS,UPDATE_JOB,UPDATE_FIELD,UPDATE_EVENT_FIELD } from "../actions/actionTypes";
+import { NEW_JOB, NEW_EVENT,ADD_ASSESTMENT, GET_ALL_JOBS,UPDATE_JOB,UPDATE_FIELD,UPDATE_EVENT_FIELD } from "../actions/actionTypes";
 
 const initialState = {
-  jobs: []
+  assesments: []
 };
 
-export default function jobdetail(state = initialState, action) {
+export default function assesmentdetails(state = initialState, action) {
   switch (action.type) {
-    case NEW_JOB:
+
+    case ADD_ASSESTMENT:
       return {
-        jobs: [...state.jobs, action.data]
+        assesments: [...state.assesments, action.data]
       };
-    case GET_ALL_JOBS:
-      return {
-        jobs: action.data
-      };
+    // case GET_ALL_JOBS:
+    //   return {
+    //     jobs: action.data
+    //   };
 
     
 

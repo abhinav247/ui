@@ -1,25 +1,32 @@
-.assessment-details {
-        display: flex;
-        justify-content:space-between;
+.top-panel {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  .assessment-details {
+    display: flex;
+    justify-content: space-between;
 
+    .assesment-cell {
+      align-items: center;
+      font-size: 12px;
+      font-family: "robotoregular";
+      width: 23%;
+      display: flex;
+      justify-content: space-around;
+      background: #005181;
+      color: #ffffff;
+      padding: 15px 0;
+      border-radius: 3px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 
-
-      .assesment-cell{
-        align-items: center;
-        font-size: 12px;
-        font-family: 'robotoregular';
-        width: 23%;
-        display: flex;
-        justify-content: space-around;
-        background: #005181;
-        color: #ffffff;
-        padding: 15px 0;
-        border-radius: 3px;
-        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-
-
-        .count{
-            font-size: 23px;
-        }
+      .count {
+        font-size: 23px;
       }
+    }
+  }
+
+  .add-assessment {
+    img {
+      height: 67px;
+    }
+  }
 }

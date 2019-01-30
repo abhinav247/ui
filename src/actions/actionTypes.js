@@ -2,6 +2,7 @@
 export const BEGIN_AJAX_CALL= "BEGIN_AJAX_CALL";
 export  const END_AJAX_CALL= "END_AJAX_CALL";
 export const GET_ALL_JOBS="GET_ALL_JOBS"
+export const ADD_ASSESTMENT='ADD_ASSESTMENT'
 export const NEW_JOB='NEW_JOB'
 export const NEW_EVENT='NEW_EVENT'
 export const UPDATE_JOB ='UPDATE_JOB'

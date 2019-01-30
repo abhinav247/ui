@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 // import {getAllJobs} from './actions/jobs.action';
 import './assets/style/main.scss';
 import TopPanel from './components/topPanel';
+import Listing from './components/listing';
 
 class App extends Component {
   constructor (props) {
@@ -22,7 +23,7 @@ class App extends Component {
       <div className="container">
         <Header />
         <TopPanel />
-       
+        <Listing />
 
       </div>
     );

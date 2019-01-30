@@ -2,8 +2,8 @@
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import dropIcon from '../assets/img/Polygon.png';
-import userIcon from '../assets/img/Polygon.png';
+import dropIcon from '../assets/img/dropdown.png';
+import userIcon from '../assets/img/Frame.png';
 
 class Header extends Component {
   constructor(props) {
