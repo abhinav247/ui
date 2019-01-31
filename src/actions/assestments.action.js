@@ -1,5 +1,6 @@
 import {
   ADD_ASSESTMENT,
+  ADD_PARTICIPANT,
   NEW_EVENT,
   GET_ALL_JOBS,
   UPDATE_JOB,
@@ -25,7 +26,6 @@ export const defaultAssestment = {
   closingdate: moment(),
   primaryassestment: {
     startdate: moment(),
-    noofparticipants: 0,
     noofresponses: 0,
     participants: []
   },
@@ -99,6 +99,13 @@ export const addAssesment = () => dispatch => {
 
 };
 
+
+export const onAddParticipant= (assestmentid)=>dispatch=>{
+    const data={_id:uniqueId(),...defaultParticipant}
+    dispatch(onAddParticipant({data,assestmentid}))
+}
+
+const onaddparticipant= (data,id)=>{return {type:ADD_PARTICIPANT,data,id}}
 
 const addassesment= data =>{ return { type:ADD_ASSESTMENT, data} }
 
