@@ -19,21 +19,20 @@ export default function assesmentdetails (state = initialState, action) {
       return {
         assesments: [...state.assesments, action.data],
       };
-    // case GET_ALL_JOBS:
-    //   return {
-    //     jobs: action.data
-    //   };
+
     case ADD_PARTICIPANT:
+    debugger;
       return {
         assesments: [
           ...state.assesments.map (assestment => {
             if (assestment._id === action.id) {
               return {
                 ...assestment,
-                primaryassestment: [
+                primaryassestment: {
                   ...assestment.primaryassestment,
-                  action.data,
-                ]
+                  participants:[...assestment.participants,action.data]
+              
+                }
               };
             }
             return assestment;

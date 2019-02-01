@@ -101,8 +101,9 @@ export const addAssesment = () => dispatch => {
 
 
 export const onAddParticipant= (assestmentid)=>dispatch=>{
+  debugger;
     const data={_id:uniqueId(),...defaultParticipant}
-    dispatch(onAddParticipant({data,assestmentid}))
+    dispatch(onaddparticipant(data,assestmentid))
 }
 
 const onaddparticipant= (data,id)=>{return {type:ADD_PARTICIPANT,data,id}}

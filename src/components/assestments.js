@@ -136,7 +136,7 @@ class Assestments extends Component {
   }
 
   RenderJobDescription (assesment) {
-    const {primaryassestment} = assesment;
+    
 
     return (
       <Tabs>
@@ -147,7 +147,7 @@ class Assestments extends Component {
         </TabList>
 
         <TabPanel>
-          <h2><PrimaryAssestment assesmentdetails={primaryassestment} /></h2>
+          <h2><PrimaryAssestment assesment={assesment} /></h2>
         </TabPanel>
         <TabPanel>
           <h2>Any content 2</h2>
