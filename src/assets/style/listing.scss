@@ -16,48 +16,39 @@
     }
   }
 
-  .assestments{
-
-    .assestment__type{
+  .assestments {
+    .assestment__type {
       background-color: #0f9014;
-      color:#ffffff;
+      color: #ffffff;
     }
 
-
-    
-
-
-    .expander{
+    .expander {
       background-color: #005181;
       padding: 8px 0;
     }
   }
 
+  .row__expanded {
+    .react-tabs {
+      text-align: start;
+    }
+    .react-tabs__tab {
+      padding: 16px 30px;
+      color: #ffffff;
+      background-color: #005181;
+      font-family: robotobold;
+      margin-right: 5px;
+      font-size: 12px;
+      border-radius: 4px;
 
-    .row__expanded {
-
-      .react-tabs{
-        text-align: start;
-      }
-      .react-tabs__tab {
-        padding: 16px 30px;
-        color: #ffffff;
-        background-color: #005181;
-        font-family: robotobold;
-        margin-right: 5px;
-        font-size: 12px;
-        border-radius: 4px;
-
-      &.react-tabs__tab--selected{
-        color:#005181;
+      &.react-tabs__tab--selected {
+        color: #005181;
         background-color: #ffffff;
       }
-
     }
   }
-  
 
-  .assestment-details{
+  .assestment-details {
     padding: 12px;
     border-radius: 5px;
     margin: 7px 7px;
@@ -68,34 +59,38 @@
     flex-direction: column;
     text-align: center;
 
-    .second_element{
+    .second_element {
       font-size: 19px;
-    font-family: robotobold;
-    margin-top: 11px;
-
+      font-family: robotobold;
+      margin-top: 11px;
     }
   }
 
-  button{
+  button {
     color: #ffffff;
     background-color: #005181;
-    font-size: 15px;
-    font-family: robotobold;
-    padding: 6px 71px;
+    font-size: 14px;
+    font-family:robotobold;
+    width: 100%;
+    padding: 9px 0;
     border-radius: 5px;
     border: 0;
   }
 
-  .upload_details{
-    color: #ffffff;
+  .upload_details {
     background-color: #000000;
-    font-size: 11px;
-    font-family: robotobold;
-    padding: 6px 71px;
-    border-radius: 5px;
-    border: 0;
   }
-  
 
-
+  .participant-listing {
+    margin-top: 10px ;
+   
+    .participant-details {
+      margin: 0px 20px;
+      font-size: 17px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      border: 1px solid;
+    }
+  }
 }

@@ -1,24 +1,23 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {map} from 'lodash';
-import {onAddParticipant} from '../actions/assestments.action';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { map } from "lodash";
+import moment from 'moment';
+import { onAddParticipant } from "../actions/assestments.action";
 
 class Primary extends Component {
-  constructor (props) {
-    super (props);
-    this.addParticipant = this.addParticipant.bind (this);
+  constructor(props) {
+    super(props);
+    this.addParticipant = this.addParticipant.bind(this);
   }
 
-  addParticipant (assestmentId) {
-    debugger;
-    const {onAddParticipant} = this.props;
-    onAddParticipant (assestmentId);
+  addParticipant(assestmentId) {
+    const { onAddParticipant } = this.props;
+    onAddParticipant(assestmentId);
   }
 
-  render () {
-    debugger;
-    const {primaryassestment,_id} = this.props.assesment;
-    const {startdate, noofresponses, participants} = primaryassestment;
+  render() {
+    const { primary, _id } = this.props.assesment;
+    const { startDate, endDate, no_response, participants } = primary;
     return (
       <div>
         <div className="primary-assestment row">
@@ -26,11 +25,9 @@ class Primary extends Component {
             <div className="assestment-details">
               <span>Starting Date</span>
               <span className="second_element">
-                {startdate.format ('DD-MM-YYYY')}
+                {moment(startDate).format("DD-MM-YYYY")}
               </span>
-
             </div>
-
           </div>
           <div className=" col-md-3">
             <div className="assestment-details">
@@ -41,32 +38,38 @@ class Primary extends Component {
           <div className=" col-md-3">
             <div className="assestment-details">
               <span>No. of Responses</span>
-              <span className="second_element">{noofresponses}</span>
+              <span className="second_element">{no_response}</span>
             </div>
           </div>
           <div className="add-participant-panel col-md-3">
-
-            <button onClick={()=>{this.addParticipant(_id)}}>Add Participant</button>
-            <span className="upload_details">Product Designer.pdf</span>
+            <button
+              onClick={() => {
+                this.addParticipant(_id);
+              }}
+            >
+              Add Participant
+            </button>
+            <button className="upload_details">Product Designer.pdf</button>
           </div>
         </div>
         <div className="participant-listing row">
           <table>
             <tbody>
-              {map (participants, participant => {
+              {map(participants, participant => {
                 return (
                   <div className=" participant-details row">
                     <div className="col-md-3">{participant.name}</div>
                     <div className="col-md-3">{participant.email}</div>
-                    <div className="col-md-3">
+                    <div className="col-md-5">
                       <button className="report">Send Email</button>
                     </div>
-                    <div className="col-md-3">Remove</div>
+                    <div className="col-md-1">
+                      <button className="report">Remove</button>
+                    </div>
                   </div>
                 );
               })}
             </tbody>
-
           </table>
         </div>
       </div>
@@ -74,6 +77,9 @@ class Primary extends Component {
   }
 }
 
-export default connect (null, {
-  onAddParticipant,
-}) (Primary);
+export default connect(
+  null,
+  {
+    onAddParticipant
+  }
+)(Primary);

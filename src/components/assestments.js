@@ -1,68 +1,106 @@
-import React, {Component} from 'react';
-import {get} from 'lodash';
-import {connect} from 'react-redux';
-import expanderIcon from '../assets/img/hamburger.png';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import PrimaryAssestment from './primaryassestment';
+import React, { Component } from "react";
+import { get } from "lodash";
+import { connect } from "react-redux";
+import expanderIcon from "../assets/img/hamburger.png";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import PrimaryAssestment from "./primaryassestment";
+import moment from "moment";
+import {updateField} from '../actions/assestments.action'
 
 class Assestments extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
       data: [],
       expandedRows: [],
       open: false,
-      value: '',
-      showJobMenu: false,
+      value: "",
+      showJobMenu: false
     };
   }
 
-  //   addEvent(rowId, row) {
-  //     const { job_sla, eventList } = row;
-  //     let totalEventTime = getEventTotalSLa(eventList);
-  //     if (totalEventTime + defaultEvent.event_sla > job_sla) {
-  //       alert("Adding Event will Cross Job SLa");
-  //     } else {
-  //       const { addEvents } = this.props;
-  //       addEvents(rowId);
-  //     }
-  //   }
+  getComponent(row, field, fieldEditing, controlId, classname) {
+    // const { event_status } = row;
+    const self = this;
+    if (fieldEditing !== "" && fieldEditing === controlId) {
+      switch (field) {
+        case "job_description":
+          return <div />;
+          // <textarea
+          //   ref={node => (this[controlId] = node)}
+          //   className={classname}
+          //   name={field}
+          //   onChange={e => {
+          //     this.onChange(row._id, field, e.target.value);
+          //   }}
+          //   // onKeyPress={this._handleKeyPress.bind(this)}
+          //   value={row[field]}
+          // />
+          // );
+          break;
 
-  componentWillMount () {
-    document.addEventListener ('mousedown', this.handleClick, false);
+        default:
+          return (
+            <input
+              ref={node => (this[controlId] = node)}
+              name={field}
+              value={row[field]}
+              onChange={e => {
+                this.onChange(row._id, field, e.target.value);
+              }}
+            />
+          );
+      }
+    }
+
+    switch (field) {
+      case "job_description":
+        return (
+          <p
+            className={classname ? classname : ""}
+            id={controlId}
+            onClick={e => {
+              self.editField(e, field, row);
+            }}
+          >
+            {row[field]}
+          </p>
+        );
+
+      default:
+        return (
+          <div
+            className={classname ? classname : ""}
+            id={controlId}
+            onClick={e => {
+              self.editField(e, field, row);
+            }}
+          >
+            {row[field]}
+          </div>
+        );
+    }
   }
 
-  onChange (id, field, value) {
-    // const { data } = this.state;
-    // const { updateField, updateEventField } = this.props;
-    // if (["event_description", "event_sla"].includes(field)) {
-    //   if (field === "event_sla") {
-    //     let currentJob = find(data, job => {
-    //       return find(job.eventList, event => {
-    //         return event._id === id;
-    //       });
-    //     });
-    //     let totalEventTime = getEventTotalSLa(currentJob.eventList, id);
-    //     if (totalEventTime + parseInt(value) >= currentJob.job_sla) {
-    //       alert("This value should be less than the total sla");
-    //     } else {
-    //       updateEventField(id, field, value);
-    //     }
-    //   } else {
-    //     updateEventField(id, field, value);
-    //   }
-    // } else {
-    //   updateField(id, field, value);
-    // }
-    // this.setState({ updatedValue: value });
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClick, false);
   }
 
-  componentWillUnMount () {
-    document.removeEventListener ('mousedown', this.handleClick, false);
+  onChange(id, field, value) {
+    const { data } = this.state;
+    const { updateField} = this.props;
+
+    updateField(id, field, value);
+
+    this.setState({ updatedValue: value });
   }
 
-  handleClick (e) {
+  componentWillUnMount() {
+    document.removeEventListener("mousedown", this.handleClick, false);
+  }
+
+  handleClick(e) {
     // const { fieldEditing } = this.state;
     // if (this[fieldEditing] && this[fieldEditing].contains(e.target)) {
     //   return;
@@ -76,26 +114,26 @@ class Assestments extends Component {
     // }
   }
 
-  handleRowClick (rowId) {
+  handleRowClick(rowId) {
     const currentExpandedRows = this.state.expandedRows;
-    const isRowCurrentlyExpanded = currentExpandedRows.includes (rowId);
+    const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
 
     const newExpandedRows = isRowCurrentlyExpanded
-      ? currentExpandedRows.filter (_id => _id !== rowId)
-      : currentExpandedRows.concat (rowId);
+      ? currentExpandedRows.filter(_id => _id !== rowId)
+      : currentExpandedRows.concat(rowId);
 
-    this.setState ({expandedRows: newExpandedRows});
+    this.setState({ expandedRows: newExpandedRows });
   }
 
-  editField (e, field, row) {
-    this.setState ({
+  editField(e, field, row) {
+    this.setState({
       fieldEditing: e.target.id,
       controlId: row._id,
-      field: field,
+      field: field
     });
   }
 
-  RenderEvents (row) {
+  RenderEvents(row) {
     // const { fieldEditing } = this.state;
     // const { eventList, _id } = row;
     // const renderevent = (event, slaid) => {
@@ -135,9 +173,7 @@ class Assestments extends Component {
     // );
   }
 
-  RenderJobDescription (assesment) {
-    
-
+  RenderJobDescription(assesment) {
     return (
       <Tabs>
         <TabList>
@@ -147,7 +183,9 @@ class Assestments extends Component {
         </TabList>
 
         <TabPanel>
-          <h2><PrimaryAssestment assesment={assesment} /></h2>
+          <h2>
+            <PrimaryAssestment assesment={assesment} />
+          </h2>
         </TabPanel>
         <TabPanel>
           <h2>Any content 2</h2>
@@ -156,7 +194,7 @@ class Assestments extends Component {
     );
   }
 
-  saveChanges () {
+  saveChanges() {
     // const { fieldEditing, controlId, field, updatedValue, data } = this.state;
     // const { updateJob, updateEvent } = this.props;
     // if (this[fieldEditing]) {
@@ -197,113 +235,40 @@ class Assestments extends Component {
     // });
   }
 
-  // getComponent(row, field, fieldEditing, controlId, classname) {
-  //   const { event_status } = row;
-  //   const self = this;
-  //   if (fieldEditing !== "" && fieldEditing === controlId) {
-  //     switch (field) {
-  //       case "job_description":
-  //         return (
-  //           <textarea
-  //             ref={node => (this[controlId] = node)}
-  //             className={classname}
-  //             name={field}
-  //             onChange={e => {
-  //               this.onChange(row._id, field, e.target.value);
-  //             }}
-
-  //             value={row[field]}
-  //           />
-  //         );
-  //         break;
-
-  //       default:
-  //         return (
-  //           <input
-  //             ref={node => (this[controlId] = node)}
-  //             name={field}
-  //             value={row[field]}
-  //             onChange={e => {
-  //               this.onChange(row._id, field, e.target.value);
-  //             }}
-
-  //           />
-  //         );
-  //     }
-  //   }
-
-  //   switch (field) {
-  //     case "job_description":
-  //       return (
-  //         <p
-  //           className={classname ? classname : ""}
-  //           id={controlId}
-  //           onClick={e => {
-  //             self.editField(e, field, row);
-  //           }}
-  //         >
-  //           {row[field]}
-  //         </p>
-  //       );
-
-  //     default:
-  //       return (
-  //         <span
-  //           className={classname ? classname : ""}
-  //           id={controlId}
-  //           onClick={e => {
-  //             if (event_status === undefined) {
-  //               self.editField(e, field, row);
-  //             }
-  //             if (event_status !== undefined && event_status === "started") {
-  //               self.editField(e, field, row);
-  //             }
-  //           }}
-  //         >
-  //           {row[field]}
-  //         </span>
-  //       );
-  //   }
-  // }
-
-  renderItem (assesment) {
-    const clickCallback = () => this.handleRowClick (assesment._id);
+  renderItem(assesment) {
+    const clickCallback = () => this.handleRowClick(assesment._id);
     const itemRows = [
       <tr
-        key={'row-data-' + assesment._id}
+        key={"row-data-" + assesment._id}
         className={
-          this.state.expandedRows.includes (assesment._id)
-            ? 'active'
-            : 'item-row'
+          this.state.expandedRows.includes(assesment._id)
+            ? "active"
+            : "item-row"
         }
       >
-        <td className="assestment__type">
-          E
-        </td>
+        <td className="assestment__type">E</td>
         <td>
-          <span style={{fontFamily: 'robotobold'}}>{assesment.name}</span>
-          <span>{assesment.dated}</span>
+          <div style={{ fontFamily: "robotobold" }}>
+            {assesment.assessment_title}
+          </div>
+          <div>{assesment.status}</div>
         </td>
-        <td>
-          {assesment.noofparticipants}
-        </td>
-        <td style={{color: '#ffc107'}}>
-          {assesment.status}
-        </td>
-        <td>{assesment.response}</td>
+        <td>{assesment.total_participants}</td>
+        <td style={{ color: "#ffc107" }}>{assesment.status}</td>
+        <td>no response </td>
 
         {/* <td className={`job-signal ${getSignalClass(jobSignal)} `}> */}
-        <td>{assesment.closingdate.format ('d-MM-YYYY')}</td>
+        <td>{moment(assesment.closingDate).format("DD-MM-YYYY")}</td>
         <td onClick={clickCallback} className="expander">
           <img src={expanderIcon} />
         </td>
-      </tr>,
+      </tr>
     ];
 
-    if (this.state.expandedRows.includes (assesment._id)) {
-      itemRows.push (
-        <tr key={'row-expanded-' + assesment._id} className="row__expanded">
-          <td colspan={6}>{this.RenderJobDescription (assesment)}</td>
+    if (this.state.expandedRows.includes(assesment._id)) {
+      itemRows.push(
+        <tr key={"row-expanded-" + assesment._id} className="row__expanded">
+          <td colspan={7}>{this.RenderJobDescription(assesment)}</td>
         </tr>
       );
     }
@@ -311,16 +276,16 @@ class Assestments extends Component {
     return itemRows;
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.listing !== nextProps.listing)
-      this.setState ({data: nextProps.listing});
+      this.setState({ data: nextProps.listing });
   }
 
-  render () {
+  render() {
     let allItemRows = [];
-    this.state.data.forEach (item => {
-      const perItemRows = this.renderItem (item);
-      allItemRows = allItemRows.concat (perItemRows);
+    this.state.data.forEach(item => {
+      const perItemRows = this.renderItem(item);
+      allItemRows = allItemRows.concat(perItemRows);
     });
 
     return (
@@ -342,8 +307,11 @@ class Assestments extends Component {
   }
 }
 
-export default connect (state => {
-  return {
-    listing: get (state, 'assesmentdetails.assesments'),
-  };
-}, {}) (Assestments);
+export default connect(
+  state => {
+    return {
+      listing: get(state, "assesmentdetails.assesments")
+    };
+  },
+  {updateField}
+)(Assestments);

@@ -2,7 +2,7 @@ import {
   ADD_ASSESTMENT,
   ADD_PARTICIPANT,
   NEW_EVENT,
-  GET_ALL_JOBS,
+  GET_ALL_ASSESSMENTS,
   UPDATE_JOB,
   UPDATE_FIELD,
   UPDATE_EVENT_FIELD
@@ -18,23 +18,22 @@ export const defaultParticipant = {
 };
 
 export const defaultAssestment = {
-  name: "Hr Manager",
-  dated: "Draft",
-  noofparticipants: 0,
+  assessment_title:'Hr Manager',
+  type: "employee",
+  total_participants:0,
   status: "Draft",
-  response: 0,
-  closingdate: moment(),
-  primaryassestment: {
-    startdate: moment(),
-    noofresponses: 0,
+  startDate:moment(),
+  closingDate: moment(),
+  primaryList: {
+    primary_startDate: moment(),
+    no_response: 0,
     participants: []
-  },
-  secondaryassestment: {},
-  tertiaryassestment: {}
+  }
 };
 
-// let url = 'http://ec2-13-233-158-190.ap-south-1.compute.amazonaws.com:5002'
-let url = "http://localhost:5002";
+let url = 'http://ec2-52-77-229-152.ap-southeast-1.compute.amazonaws.com:3600';
+
+// let url = "http://localhost:5002";
 export const postResource = (url, content) => {
   const requestOptions = {
     method: "POST",
@@ -85,43 +84,49 @@ export const putResource = (url, content) => {
 };
 
 export const addAssesment = () => dispatch => {
-  // dispatch(beginAjaxCall());
-  // postResource(`${url}/postjob`, defaultJob)
-  //   .then(res => {
-  //     dispatch(endAjaxCall());
-  //     dispatch(JobAdded(get(res, "data")));
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //   });
-  dispatch(addassesment({_id:uniqueId(),...defaultAssestment}))
-
+  dispatch(beginAjaxCall());
+  postResource(`${url}/assessment/create`,defaultAssestment )
+    .then(res => {
+      debugger;
+      dispatch(endAjaxCall());
+      dispatch(addassesment(get(res,'data')))
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  
 
 };
 
 
 export const onAddParticipant= (assestmentid)=>dispatch=>{
-  debugger;
-    const data={_id:uniqueId(),...defaultParticipant}
-    dispatch(onaddparticipant(data,assestmentid))
+    postResource(`${url}/assessment/addprimarypart`,{id:assestmentid,...defaultParticipant})
+    .then(res => {
+      let assessment=get(res,'data');
+      dispatch(endAjaxCall());
+      dispatch(onaddparticipant(assessment))
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
 
-const onaddparticipant= (data,id)=>{return {type:ADD_PARTICIPANT,data,id}}
+const onaddparticipant= (data)=>{return {type:ADD_PARTICIPANT,data}}
 
 const addassesment= data =>{ return { type:ADD_ASSESTMENT, data} }
 
-export const deleteJob = jobid => dispatch => {
-  dispatch(beginAjaxCall());
-  deleteResource(`${url}/delete/${jobid}`).then(res => {
-    dispatch(alljobs(get(res, "data")));
-    dispatch(endAjaxCall());
-  });
-};
+// export const deleteJob = jobid => dispatch => {
+//   dispatch(beginAjaxCall());
+//   deleteResource(`${url}/delete/${jobid}`).then(res => {
+//     dispatch(alljobs(get(res, "data")));
+//     dispatch(endAjaxCall());
+//   });
+// };
 
-export const getAllJobs = () => dispatch => {
+export const getAllAssessment = () => dispatch => {
   dispatch(beginAjaxCall());
-  getResource(`${url}/jobs`).then(res => {
-    dispatch(alljobs(get(res, "jobs")));
+  getResource(`${url}/assessment/get`).then(res => {
+    dispatch(allassessments(get(res, "assessments")));
     dispatch(endAjaxCall());
   });
 };
@@ -155,8 +160,8 @@ export const addEvents = id => dispatch => {
   //   dispatch(endAjaxCall());
   // });
 };
-const alljobs = data => {
-  return { type: GET_ALL_JOBS, data };
+const allassessments = data => {
+  return { type: GET_ALL_ASSESSMENTS, data };
 };
 
 export const updateField = (rowId, field, value) => {

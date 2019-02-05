@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 // import JobsTable from './components/JobsTable';
  import Header from './components/Header';
 // import SideNav from './components/SideNav';
-// import {getAllJobs} from './actions/jobs.action';
+ import {getAllAssessment} from './actions/assestments.action';
 import './assets/style/main.scss';
 import TopPanel from './components/topPanel';
 import Listing from './components/listing';
@@ -14,8 +14,8 @@ class App extends Component {
   }
 
   componentWillMount () {
-    // const {getAllJobs}=this.props;
-    // getAllJobs();
+    const {getAllAssessment}=this.props;
+    getAllAssessment();
   }
 
   render () {
@@ -36,5 +36,5 @@ export default connect (
       // loading: state.ajaxStatus > 0,
     };
   },
-  {}
+  {getAllAssessment}
 ) (App);

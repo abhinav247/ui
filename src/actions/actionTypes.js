@@ -1,7 +1,7 @@
 
 export const BEGIN_AJAX_CALL= "BEGIN_AJAX_CALL";
 export  const END_AJAX_CALL= "END_AJAX_CALL";
-export const GET_ALL_JOBS="GET_ALL_JOBS"
+export const GET_ALL_ASSESSMENTS="GET_ALL_ASSESSMENTS"
 export const ADD_ASSESTMENT='ADD_ASSESTMENT'
 export const NEW_JOB='NEW_JOB'
 export const NEW_EVENT='NEW_EVENT'
