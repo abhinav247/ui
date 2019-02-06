@@ -3,9 +3,10 @@ import {
   ADD_PARTICIPANT,
   NEW_EVENT,
   GET_ALL_ASSESSMENTS,
-  UPDATE_JOB,
+  UPDATE_ASSESSMENT,
   UPDATE_FIELD,
-  UPDATE_EVENT_FIELD
+  UPDATE_EVENT_FIELD,
+  UPDATE_PARTICIPANT_FIELD
 } from "./actionTypes";
 import { beginAjaxCall, endAjaxCall } from "./ajaxstatus.action";
 import moment from "moment";
@@ -68,6 +69,7 @@ export const deleteResource = url => {
   });
 };
 
+
 export const putResource = (url, content) => {
   const requestOptions = {
     method: "PUT",
@@ -100,6 +102,7 @@ export const addAssesment = () => dispatch => {
 
 
 export const onAddParticipant= (assestmentid)=>dispatch=>{
+    dispatch(beginAjaxCall());
     postResource(`${url}/assessment/addprimarypart`,{id:assestmentid,...defaultParticipant})
     .then(res => {
       let assessment=get(res,'data');
@@ -131,35 +134,38 @@ export const getAllAssessment = () => dispatch => {
   });
 };
 
-export const updateJob = (jobId, field, value) => dispatch => {
+export const updateAssessment = (assessmentId,field,value) => dispatch => {
   dispatch(beginAjaxCall());
-  putResource(`${url}/job/${jobId}`, { [field]: value }).then(res => {
-    dispatch(jobUpdated(get(res, "data")));
+  putResource(`${url}/assessment/update/${assessmentId}`, { [field]: value }).then(res => {
+    debugger;
+    dispatch(assessmentUpdated(get(res, "data")));
     dispatch(endAjaxCall());
   });
 };
 
-export const updateEvent = (eventId, content) => dispatch => {
+export const updateParticipant = (eventId, content) => dispatch => {
   dispatch(beginAjaxCall());
   putResource(`${url}/updateEvent/${eventId}`, content).then(res => {
-    dispatch(jobUpdated(get(res, "data")));
+    // dispatch(jobUpdated(get(res, "data")));
     dispatch(endAjaxCall());
   });
 };
 
 // const eventUpdated=data=>{return {type:EVENT_UPDATED,data} }
 
-export const addEvents = id => dispatch => {
-  dispatch(beginAjaxCall());
+// export const addEvents = id => dispatch => {
+//   dispatch(beginAjaxCall());
 
-  let now = moment();
-  // let endDate = now.add(defaultEvent.event_sla - 1, "minutes");
+//   let now = moment();
+//   // let endDate = now.add(defaultEvent.event_sla - 1, "minutes");
 
-  // // postResource(`${url}/event`, { jobid: id, ...defaultEvent }).then(res => {
-  //   dispatch(jobUpdated(get(res, "data")));
-  //   dispatch(endAjaxCall());
-  // });
-};
+//   // // postResource(`${url}/event`, { jobid: id, ...defaultEvent }).then(res => {
+//   //   dispatch(jobUpdated(get(res, "data")));
+//   //   dispatch(endAjaxCall());
+//   // });
+// };
+
+
 const allassessments = data => {
   return { type: GET_ALL_ASSESSMENTS, data };
 };
@@ -168,16 +174,16 @@ export const updateField = (rowId, field, value) => {
   return { type: UPDATE_FIELD, rowId, field, value };
 };
 
-export const updateEventField = (eventId, field, value) => {
-  return { type: UPDATE_EVENT_FIELD, eventId, field, value };
+export const updatePaticipantField = (participantId, field, value) => {
+  return { type: UPDATE_PARTICIPANT_FIELD, participantId, field, value };
 };
 
 export const newEvent = id => dispatch => {
   // dispatch(eventAdded(id, defaultEvent));
 };
 
-const jobUpdated = data => {
-  return { type: UPDATE_JOB, data };
+const assessmentUpdated = data => {
+  return { type: UPDATE_ASSESSMENT, data };
 };
 
 const eventAdded = (id, data) => {

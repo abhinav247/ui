@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import './assets/style/main.scss';
 import TopPanel from './components/topPanel';
 import Listing from './components/listing';
-
+import Loader from "react-loader";
 class App extends Component {
   constructor (props) {
     super (props);
@@ -19,12 +19,14 @@ class App extends Component {
   }
 
   render () {
+
+    const {loading}=this.props;
     return (
       <div className="container">
         <Header />
         <TopPanel />
         <Listing />
-
+        <Loader loaded={!loading}/> 
       </div>
     );
   }
@@ -33,7 +35,7 @@ class App extends Component {
 export default connect (
   state => {
     return {
-      // loading: state.ajaxStatus > 0,
+      loading: state.ajaxStatus > 0,
     };
   },
   {getAllAssessment}

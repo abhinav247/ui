@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 import addIcon from "../assets/img/adding assessment.png";
 import { addAssesment } from "../actions/assestments.action";
 import { get } from "lodash";
+import {getAssessmentStatus} from './utils'
 
-const getTopPanelData = listing=> {
+const getTopPanelData = (listing,assesmentStatus)=> {
   return [
   {
     status: "Total Assessment",
@@ -13,15 +14,15 @@ const getTopPanelData = listing=> {
   },
   {
     status: "Open",
-    Count: 0
+    Count: assesmentStatus.noOfOpen
   },
   {
     status: "Closed",
-    Count: 0
+    Count: assesmentStatus.noOfClosed
   },
   {
     status: "Draft",
-    Count: 0
+    Count: assesmentStatus.noOfDrafts
   
   }
 ]
@@ -40,10 +41,11 @@ class TopPanel extends Component {
 
   render() {
     const {listing}=this.props;
+    const assesmentStatus=getAssessmentStatus(listing)
     return (
       <div className="top-panel row">
         <div className="assessment-details col-md-11">
-          {map(getTopPanelData(listing), detail => {
+          {map(getTopPanelData(listing,assesmentStatus), detail => {
             return (
               <div className="assesment-cell col-md-3">
                 <span className="count">{detail.Count}</span>
