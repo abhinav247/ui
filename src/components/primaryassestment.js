@@ -1,24 +1,33 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {map} from 'lodash';
-import moment from 'moment';
-import {onAddParticipant} from '../actions/assestments.action';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { map } from "lodash";
+import moment from "moment";
+import {
+  onAddParticipant,
+  updateParticipant,
+  deleteParticipant
+} from "../actions/assestments.action";
 
 class Primary extends Component {
-  constructor (props) {
-    super (props);
-    this.addParticipant = this.addParticipant.bind (this);
+  constructor(props) {
+    super(props);
+    this.addParticipant = this.addParticipant.bind(this);
   }
 
-  addParticipant (assestmentId) {
-    const {onAddParticipant} = this.props;
-    onAddParticipant (assestmentId);
+  addParticipant(assestmentId) {
+    const { onAddParticipant } = this.props;
+    onAddParticipant(assestmentId);
   }
 
-  render () {
-    const {getComponent, fieldEditing} = this.props;
-    const {primary, _id} = this.props.assesment;
-    const {startDate, endDate, no_response, participants} = primary;
+  render() {
+    const {
+      getComponent,
+      fieldEditing,
+      updateParticipant,
+      deleteParticipant
+    } = this.props;
+    const { primary, _id } = this.props.assesment;
+    const { startDate, endDate, no_response, participants } = primary;
     return (
       <div>
         <div className="primary-assestment row">
@@ -26,7 +35,7 @@ class Primary extends Component {
             <div className="assestment-details">
               <span>Starting Date</span>
               <span className="second_element">
-                {moment (startDate).format ('DD-MM-YYYY')}
+                {moment(startDate).format("DD-MM-YYYY")}
               </span>
             </div>
           </div>
@@ -45,7 +54,7 @@ class Primary extends Component {
           <div className="add-participant-panel col-md-3">
             <button
               onClick={() => {
-                this.addParticipant (_id);
+                this.addParticipant(_id);
               }}
             >
               Add Participant
@@ -56,35 +65,59 @@ class Primary extends Component {
         <div className="participant-listing row">
           <table>
             <tbody>
-              {map (participants, participant => {
+              {map(participants, participant => {
                 return (
                   <div className=" participant-details row">
-                    <div className="col-md-3">
-                      {getComponent (
+                    <div className="col-md-2">
+                      {getComponent(
                         participant,
-                        'name',
+                        "name",
                         fieldEditing,
                         `name_${participant._id}`,
-                        'name'
+                        "name"
                       )}
                       {/* {participant.name} */}
-
                     </div>
                     <div className="col-md-3">
-                    {getComponent (
+                      {getComponent(
                         participant,
-                        'email',
+                        "email",
                         fieldEditing,
                         `email_${participant._id}`,
-                        'email'
+                        "email"
                       )}
-                    {/* {participant.email} */}
+                      {/* {participant.email} */}
                     </div>
-                    <div className="col-md-5">
-                      <button className="report">Send Email</button>
+                    <div className="col-md-6">
+                      {!participant.mail_status ? (
+                        <button
+                          className="report"
+                          onClick={e => {
+                            updateParticipant(
+                              participant._id,
+                              "mail_status",
+                              true
+                            );
+                          }}
+                        >
+                          Send Email
+                        </button>
+                      ) : (
+                        <div className="row">
+                          <div className="col-md-5 reports">View Report</div>
+                          <div className="col-md-5 reports">Send Reminder</div>
+                        </div>
+                      )}
                     </div>
                     <div className="col-md-1">
-                      <button className="report">Remove</button>
+                      <button
+                        // className="report"
+                        onClick={e => {
+                          deleteParticipant(participant._id, _id);
+                        }}
+                      >
+                        Remove
+                      </button>
                     </div>
                   </div>
                 );
@@ -97,6 +130,11 @@ class Primary extends Component {
   }
 }
 
-export default connect (null, {
-  onAddParticipant,
-}) (Primary);
+export default connect(
+  null,
+  {
+    onAddParticipant,
+    updateParticipant,
+    deleteParticipant
+  }
+)(Primary);

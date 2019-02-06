@@ -7,6 +7,7 @@ import {
   UPDATE_ASSESSMENT,
   UPDATE_FIELD,
   UPDATE_EVENT_FIELD,
+  UPDATE_PARTICIPANT,
   UPDATE_PARTICIPANT_FIELD,
 } from '../actions/actionTypes';
 
@@ -35,7 +36,30 @@ export default function assesmentdetails (state = initialState, action) {
             return assestment;
           }),
         ],
+ 
       };
+
+    case UPDATE_PARTICIPANT:
+      return  {
+        assesments: [
+          ...state.assesments.map (assesment => {
+            return {
+              ...assesment,
+              primary: {
+                ...assesment.primary,
+                participants: [
+                  ...assesment.primary.participants.map (participant => {
+                    if (participant._id == action.updatedParticipant._id) {
+                      return action.updatedParticipant
+                    }
+                    return participant;
+                  }),
+                ],
+              }
+            }
+          })
+        ]
+      }
 
     case UPDATE_ASSESSMENT:
       return {

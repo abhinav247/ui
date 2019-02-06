@@ -70,7 +70,7 @@
     color: #ffffff;
     background-color: #005181;
     font-size: 14px;
-    font-family:robotobold;
+    font-family: robotobold;
     width: 100%;
     padding: 9px 0;
     border-radius: 5px;
@@ -82,8 +82,8 @@
   }
 
   .participant-listing {
-    margin-top: 10px ;
-   
+    margin-top: 10px;
+
     .participant-details {
       margin: 0px 20px;
       font-size: 17px;
@@ -91,6 +91,17 @@
       display: flex;
       align-items: center;
       border: 1px solid;
+    }
+
+    .reports {
+      color: #ffffff;
+      background-color: #005181;
+      font-size: 14px;
+      font-family: robotobold;
+      margin: 0 18px;
+      padding: 9px 0;
+      border-radius: 5px;
+      border: 0;
     }
   }
 }

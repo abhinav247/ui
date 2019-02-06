@@ -69,16 +69,15 @@ tbody > tr > td {
   background-color: rgba(77, 184, 234, 0.3);
 }
 
-.assestments tbody tr:nth-child(2) td:first-child {
-  // background-color: #f44336
-}
-.assestments tbody tr:nth-child(4) td:first-child {
-  background-color: #f44336
-}
+
 
 tbody tr td:nth-child(2){
-  // display: flex;
-  // flex-direction: column;
+ 
+}
+
+
+tbody tr .employee-type{
+  background-color: #0f9014;
 }
 
 

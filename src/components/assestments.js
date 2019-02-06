@@ -1,44 +1,52 @@
-import React, {Component} from 'react';
-import {get} from 'lodash';
-import {connect} from 'react-redux';
-import expanderIcon from '../assets/img/hamburger.png';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import PrimaryAssestment from './primaryassestment';
-import moment from 'moment';
-import {updateField, updateAssessment, updateParticipant,updatePaticipantField} from '../actions/assestments.action';
+import React, { Component } from "react";
+import { get } from "lodash";
+import { connect } from "react-redux";
+import expanderIcon from "../assets/img/hamburger.png";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import PrimaryAssestment from "./primaryassestment";
+import moment from "moment";
+import {
+  updateField,
+  updateAssessment,
+  updateParticipant,
+  updatePaticipantField
+} from "../actions/assestments.action";
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 class Assestments extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
       data: [],
       expandedRows: [],
       open: false,
-      value: '',
+      value: ""
     };
-    this.handleClick = this.handleClick.bind (this);
-    this.onChange = this.onChange.bind (this);
-    this.editField = this.editField.bind (this);
+    this.handleClick = this.handleClick.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.editField = this.editField.bind(this);
   }
 
-  getComponent (row, field, fieldEditing, controlId, classname) {
+  getComponent(row, field, fieldEditing, controlId, classname) {
     // const { event_status } = row;
     const self = this;
-    if (fieldEditing !== '' && fieldEditing === controlId) {
+    if (fieldEditing !== "" && fieldEditing === controlId) {
       switch (field) {
-        case 'closingDate':
+        case "closingDate":
+          let selectedDate = moment(row[field]).format("yyyy/MM/dd");
           return (
-            <DatePicker
-              ref={node => (this[controlId] = node)}
-              name={field}
-              selected={row[field]}
-              onChange={e => {
-                this.onChange (row._id, field, e.target.value);
-              }}
-            />
+            <div ref={node => (this[controlId] = node)}>
+              <DatePicker
+                name={field}
+                dateFormat="yyyy/MM/dd"
+                selected={row[field]}
+                onChange={date => {
+                  this.onChange(row._id, field, date);
+                }}
+              />
+            </div>
           );
 
         default:
@@ -48,7 +56,7 @@ class Assestments extends Component {
               name={field}
               value={row[field]}
               onChange={e => {
-                this.onChange (row._id, field, e.target.value);
+                this.onChange(row._id, field, e.target.value);
               }}
             />
           );
@@ -56,13 +64,25 @@ class Assestments extends Component {
     }
 
     switch (field) {
+      case "closingDate":
+        return (
+          <div
+            className={classname ? classname : ""}
+            id={controlId}
+            onClick={e => {
+              self.editField(e, field, row);
+            }}
+          >
+            {moment(row[field]).format("DD-MM-YYYY")}
+          </div>
+        );
       default:
         return (
           <div
-            className={classname ? classname : ''}
+            className={classname ? classname : ""}
             id={controlId}
             onClick={e => {
-              self.editField (e, field, row);
+              self.editField(e, field, row);
             }}
           >
             {row[field]}
@@ -71,59 +91,58 @@ class Assestments extends Component {
     }
   }
 
-  componentWillMount () {
-    document.addEventListener ('mousedown', this.handleClick, false);
+  componentWillMount() {
+    document.addEventListener("mousedown", this.handleClick, false);
   }
 
-  onChange (id, field, value) {
-    const {data} = this.state;
-    const {updateField,updatePaticipantField} = this.props;
+  onChange(id, field, value) {
+    const { data } = this.state;
+    const { updateField, updatePaticipantField } = this.props;
 
-    if(['name','email'].includes(field)){
-      updatePaticipantField(id,field,value)
+    if (["name", "email"].includes(field)) {
+      updatePaticipantField(id, field, value);
+    } else {
+      updateField(id, field, value);
     }
-    else{
-      updateField (id, field, value);
-    }
-    
 
-    this.setState ({updatedValue: value});
+    this.setState({ updatedValue: value });
   }
 
-  componentWillUnMount () {
-    document.removeEventListener ('mousedown', this.handleClick, false);
+  componentWillUnMount() {
+    document.removeEventListener("mousedown", this.handleClick, false);
   }
 
-  handleClick (e) {
-    const {fieldEditing} = this.state;
-    if (this[fieldEditing] && this[fieldEditing].contains (e.target)) {
+  handleClick(e) {
+    const { fieldEditing } = this.state;
+
+    if (this[fieldEditing] && this[fieldEditing].contains(e.target)) {
       return;
     } else {
-      this.saveChanges ();
+      this.saveChanges();
     }
   }
 
-  handleRowClick (rowId) {
+  handleRowClick(rowId) {
     const currentExpandedRows = this.state.expandedRows;
-    const isRowCurrentlyExpanded = currentExpandedRows.includes (rowId);
+    const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
 
     const newExpandedRows = isRowCurrentlyExpanded
-      ? currentExpandedRows.filter (_id => _id !== rowId)
-      : currentExpandedRows.concat (rowId);
+      ? currentExpandedRows.filter(_id => _id !== rowId)
+      : currentExpandedRows.concat(rowId);
 
-    this.setState ({expandedRows: newExpandedRows});
+    this.setState({ expandedRows: newExpandedRows });
   }
 
-  editField (e, field, row) {
-    this.setState ({
+  editField(e, field, row) {
+    this.setState({
       fieldEditing: e.target.id,
       controlId: row._id,
-      field: field,
+      field: field
     });
   }
 
-  RenderJobDescription (assesment) {
-    const {fieldEditing} = this.state;
+  RenderJobDescription(assesment) {
+    const { fieldEditing } = this.state;
     return (
       <Tabs>
         <TabList>
@@ -148,74 +167,92 @@ class Assestments extends Component {
     );
   }
 
-  saveChanges () {
-    const {fieldEditing, controlId, field, updatedValue} = this.state;
-    const {updateAssessment} = this.props;
+  saveChanges() {
+    const { fieldEditing, controlId, field, updatedValue } = this.state;
+    const { updateAssessment, updateParticipant } = this.props;
     if (this[fieldEditing]) {
-      if (updatedValue !== '') {
-        updateAssessment (controlId, field, updatedValue);
+      if (updatedValue !== "") {
+        if (["name", "email"].includes(field)) {
+          updateParticipant(controlId, field, updatedValue);
+        } else {
+          let DateValue =
+            field == "closingDate" ? moment(updatedValue) : updatedValue;
+
+          updateAssessment(controlId, field, DateValue);
+        }
       }
     }
-    this.setState ({
-      fieldEditing: '',
-      controlId: '',
-      field: '',
-      updatedValue: '',
+    this.setState({
+      fieldEditing: "",
+      controlId: "",
+      field: "",
+      updatedValue: ""
     });
   }
 
-  renderItem (assesment) {
-    const {fieldEditing} = this.state;
-    const {_id} = assesment;
-    const clickCallback = () => this.handleRowClick (assesment._id);
+  renderItem(assesment) {
+    const { fieldEditing } = this.state;
+    const { _id } = assesment;
+    const clickCallback = () => this.handleRowClick(assesment._id);
+
+    const assetType = type => {
+      switch (type) {
+        case "employee":
+          return "employee-type";
+        case "professional":
+          return "professional";
+        default:
+          return "employee-type";
+      }
+    };
+
     const itemRows = [
       <tr
-        key={'row-data-' + assesment._id}
+        key={"row-data-" + assesment._id}
         className={
-          this.state.expandedRows.includes (assesment._id)
-            ? 'active'
-            : 'item-row'
+          this.state.expandedRows.includes(assesment._id)
+            ? "active"
+            : "item-row"
         }
       >
-        <td className="assestment__type">E</td>
+        <td className={`${assetType(assesment.type)}`}>E</td>
         <td>
-          <div style={{fontFamily: 'robotobold'}}>
-            {this.getComponent (
+          <div style={{ fontFamily: "robotobold" }}>
+            {this.getComponent(
               assesment,
-              'assessment_title',
+              "assessment_title",
               fieldEditing,
               `assessment_title_${_id}`,
-              'assessment_title'
+              "assessment_title"
             )}
             {/* {assesment.assessment_title} */}
           </div>
           <div>{assesment.status}</div>
         </td>
         <td>{assesment.total_participants}</td>
-        <td style={{color: '#ffc107'}}>{assesment.status}</td>
+        <td style={{ color: "#ffc107" }}>{assesment.status}</td>
         <td>no response </td>
 
         {/* <td className={`job-signal ${getSignalClass(jobSignal)} `}> */}
         <td>
-          {moment (assesment.closingDate).format ('DD-MM-YYYY')}
-          {this.getComponent (
+          {this.getComponent(
             assesment,
-            'closingDate',
+            "closingDate",
             fieldEditing,
             `closingDate_${_id}`,
-            'closingDate'
+            "closingDate"
           )}
         </td>
         <td onClick={clickCallback} className="expander">
           <img src={expanderIcon} />
         </td>
-      </tr>,
+      </tr>
     ];
 
-    if (this.state.expandedRows.includes (assesment._id)) {
-      itemRows.push (
-        <tr key={'row-expanded-' + assesment._id} className="row__expanded">
-          <td colspan={7}>{this.RenderJobDescription (assesment)}</td>
+    if (this.state.expandedRows.includes(assesment._id)) {
+      itemRows.push(
+        <tr key={"row-expanded-" + assesment._id} className="row__expanded">
+          <td colspan={7}>{this.RenderJobDescription(assesment)}</td>
         </tr>
       );
     }
@@ -223,16 +260,16 @@ class Assestments extends Component {
     return itemRows;
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.listing !== nextProps.listing)
-      this.setState ({data: nextProps.listing});
+      this.setState({ data: nextProps.listing });
   }
 
-  render () {
+  render() {
     let allItemRows = [];
-    this.state.data.forEach (item => {
-      const perItemRows = this.renderItem (item);
-      allItemRows = allItemRows.concat (perItemRows);
+    this.state.data.forEach(item => {
+      const perItemRows = this.renderItem(item);
+      allItemRows = allItemRows.concat(perItemRows);
     });
 
     return (
@@ -254,12 +291,11 @@ class Assestments extends Component {
   }
 }
 
-export default connect (
+export default connect(
   state => {
     return {
-      listing: get (state, 'assesmentdetails.assesments'),
+      listing: get(state, "assesmentdetails.assesments")
     };
   },
-  {updateField, updateAssessment,updatePaticipantField}
-  
-) (Assestments);
+  { updateField, updateAssessment, updatePaticipantField, updateParticipant }
+)(Assestments);
