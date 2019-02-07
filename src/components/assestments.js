@@ -12,7 +12,7 @@ import {
   updateParticipant,
   updatePaticipantField
 } from "../actions/assestments.action";
-
+import SecondaryAssessment from './secondaryAssessment';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 class Assestments extends Component {
@@ -161,7 +161,7 @@ class Assestments extends Component {
           </h2>
         </TabPanel>
         <TabPanel>
-          <h2>Any content 2</h2>
+          <h2><SecondaryAssessment/></h2>
         </TabPanel>
       </Tabs>
     );

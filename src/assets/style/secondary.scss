@@ -1,0 +1,60 @@
+.row__expanded{
+    border: 1px solid #000000;
+
+    .react-tabs__tab-panel--selected{
+        border: 1px solid #928a8a;
+    }
+}
+
+.compentancy_selection {
+  .main-header {
+    font-size: 35px;
+    font-family: robotobold;
+  }
+
+  .competency-group-panel {
+    margin: 10px 0;
+
+    .group_name {
+      font-family: robotobold;
+      font-size: 30px;
+    }
+
+    .com_panel {
+      display: flex;
+      flex-wrap: wrap;
+
+      .competency {
+        background: #f9d9d9;
+        padding: 14px 31px;
+        margin: 10px;
+        font-size: 18px;
+      }
+
+      .competency {
+        &.selection {
+          background-color: #000000;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}
+
+.buttons_panel {
+    display: flex;
+  float: right;
+  margin: 10px 0;
+
+  button {
+    color: #ffffff;
+    background-color: #005181;
+    font-size: 24px;
+    font-family: robotoregular;
+    width: 100%;
+    padding: 8px 40px;
+    border-radius: 3px;
+    border: 0;
+    margin: 0 11px;
+  }
+}

@@ -17,10 +17,6 @@ class App extends Component {
   }
 
   componentWillMount () {
-    let co=getCompetencies();
-    let quw=getQuestioners();
-    debugger;
-    console.log(co);
     const {getAllAssessment}=this.props;
     getAllAssessment();
   }

@@ -1,4 +1,4 @@
-const groups = [
+export const groups = [
   {
     id: 1,
     title: "Group 1"
@@ -17,9 +17,8 @@ const groups = [
   }
 ];
 
-let competencies = [];
 
-const createCompetencies = (noofTimes, group_id) => {
+const createCompetencies = (noofTimes, group_id,competencies) => {
   let competenciesLength = competencies.length;
   for (
     let index = competencies.length;
@@ -35,9 +34,11 @@ const createCompetencies = (noofTimes, group_id) => {
 };
 
 export const getCompetencies = () => {
-  createCompetencies(20, 1);
-  createCompetencies(5, 2);
-  createCompetencies(5, 3);
+
+  let competencies=[]
+  createCompetencies(20, 1,competencies);
+  createCompetencies(5, 2,competencies);
+  createCompetencies(5, 3,competencies);
   return competencies;
 };
 
