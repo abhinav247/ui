@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import dropIcon from '../assets/img/dropdown.png';
 import userIcon from '../assets/img/Frame.png';
-import {getCompetencies} from '../actions/seconassesment.action';
-import {groupBy, mapValues, find, map} from 'lodash';
+import {getCompetencies,selectCompentencies} from '../actions/seconassesment.action';
+import {groupBy, mapValues, find, map,get} from 'lodash';
 import {groups} from '../actions/seconassesment.action';
 
 
@@ -13,26 +13,17 @@ class CompetencySelection extends Component {
     super (props);
     this.state = {
       competencies: getCompetencies (),
-      comArray:[]
     };
   }
 
   selectCompetencies(comp){
-      const {comArray}=this.state;
-      if(comArray.includes(comp.id)){
-        comArray.pop(comp.id)
-     
-      }
-      else{
-        comArray.push(comp.id)
-      }
-      this.setState(comArray);
-      
+      const {selectCompentencies}=this.props;
+      selectCompentencies(comp.id)
   }
 
   renderCompetencies (group) {
   
-    const {comArray}=this.state;
+    const {selectedCompentencies}=this.props;
     let selectedGroup = find (groups, function (o) {
       return o.id === group[0].groupId;
     });
@@ -43,7 +34,7 @@ class CompetencySelection extends Component {
         <div className=" com_panel">
           {map (group, comp => {
             return (
-              <div className={`competency ${comArray.includes(comp.id)?'selection':''}`} onClick={()=>{this.selectCompetencies(comp)}}>
+              <div className={`competency ${selectedCompentencies.includes(comp.id)?'selection':''}`} onClick={()=>{this.selectCompetencies(comp)}}>
                 {comp.title}
               </div>
             );
@@ -55,6 +46,7 @@ class CompetencySelection extends Component {
   }
 
   render () {
+ 
     const {competencies} = this.state;
     const groups = groupBy (competencies, 'groupId');
 
@@ -90,4 +82,8 @@ class CompetencySelection extends Component {
   }
 }
 
-export default connect (null, {}) (CompetencySelection);
+export default connect (state=>{
+  return {
+    selectedCompentencies:get(state,'secondassessment.selectedCompetencies')
+  }
+}, {selectCompentencies}) (CompetencySelection);

@@ -1,9 +1,9 @@
-.row__expanded{
-    border: 1px solid #000000;
+.row__expanded {
+  border: 1px solid #000000;
 
-    .react-tabs__tab-panel--selected{
-        border: 1px solid #928a8a;
-    }
+  .react-tabs__tab-panel--selected {
+    // border: 1px solid #928a8a;
+  }
 }
 
 .compentancy_selection {
@@ -28,7 +28,7 @@
         background: #f9d9d9;
         padding: 14px 31px;
         margin: 10px;
-        font-size: 18px;
+        font-size: 12px;
       }
 
       .competency {
@@ -39,10 +39,14 @@
       }
     }
   }
+
+  .vertical_tabs{
+    
+  }
 }
 
 .buttons_panel {
-    display: flex;
+  display: flex;
   float: right;
   margin: 10px 0;
 

@@ -1,3 +1,6 @@
+import {SELECT_COMPETENCIES,SELECT_QUESTIONS} from './actionTypes';
+import {uniqueId} from 'lodash';
+
 export const groups = [
   {
     id: 1,
@@ -42,9 +45,9 @@ export const getCompetencies = () => {
   return competencies;
 };
 
-let questioners = [];
 
-const createQuestioners = (noofTimes, com_id, group_id) => {
+
+const createQuestioners = (noofTimes, com_id, group_id,questioners) => {
   let questlenth = questioners.length;
   for (
     let index = questioners.length;
@@ -62,14 +65,22 @@ const createQuestioners = (noofTimes, com_id, group_id) => {
 };
 
 export const getQuestioners = () => {
-  createQuestioners(6, 1, 1);
-  createQuestioners(8, 2, 1);
-  createQuestioners(4, 3, 2);
-  createQuestioners(6, 4, 2);
-  createQuestioners(8, 5, 3);
-  createQuestioners(6, 6, 3);
-  createQuestioners(12, 7, 4);
-  createQuestioners(10, 8, 4);
+  let questioners=[]
+  createQuestioners(6, 1, 1,questioners);
+  createQuestioners(8, 2, 1,questioners);
+  createQuestioners(4, 3, 2,questioners);
+  createQuestioners(6, 4, 2,questioners);
+  createQuestioners(8, 5, 3,questioners);
+  createQuestioners(6, 6, 3,questioners);
+  createQuestioners(12, 7, 4,questioners);
+  createQuestioners(10, 8, 4,questioners);
 
   return questioners;
 };
+
+
+
+export const selectCompentencies= compId=>{ return {type:SELECT_COMPETENCIES,compId}}
+
+
+export const selectQuestiones= questions=>{ return {type:SELECT_QUESTIONS,questions}}
