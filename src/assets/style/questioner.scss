@@ -1,0 +1,41 @@
+.questioners_panel {
+  margin: 15px 0;
+
+  .header {
+    font-family: robotobold;
+    font-size: 12px;
+  }
+
+  .question {
+    font-family: robotolight;
+    font-size: 16px;
+    margin: 10px 0;
+  }
+}
+
+.tabs_list {
+  padding-right: 0;
+}
+
+.questioner_selection {
+  label {
+    padding: 5px 2px;
+    font-size: 15px;
+    font-family: robotoregular;
+    font-weight: 500;
+  }
+}
+
+.competency_tab {
+  padding: 20px 0px;
+  text-align: center;
+  font-size: 18px;
+
+  &.selection {
+    font-family: robotobold;
+    background: #005181;
+    color: #ffffff;
+  }
+}
+
+

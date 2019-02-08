@@ -13,54 +13,106 @@ import {
 import Questioners from "./questioners";
 import { filter, get, map, find } from "lodash";
 
-class VerticalTabs extends Component {
+class VerticalTabs extends React.PureComponent {
   constructor(props) {
     super(props);
+    let { selectedCompetencies } = this.props;
     this.state = {
-      competencies: getCompetencies(),
-      questioners: getQuestioners()
+      selectedIndex: 0
     };
     this.onselect = this.onselect.bind(this);
   }
 
-  onselect(index, lastIndex, e) {
-    const { questioners, competencies } = this.state;
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.selectedCompetencies[0] !== this.props.selectedCompetencies[0]
+    ) {
+      let { selectedCompetencies } = nextProps;
+      this.setState({
+        selectedComp: this.findCompetency(selectedCompetencies[0]),
+        selectedCompQues: this.getQuestioners(selectedCompetencies[0])
+      });
+    }
+  }
 
-    let selectedComp = find(competencies, comp => {
-      return comp.title === e.target.innerHTML;
+  findCompetency(CompId) {
+    return find(this.props.competencies, comp => {
+      return comp.id === CompId;
     });
-    let filteredQues = filter(questioners, ques => {
-      return ques.compentency_id === selectedComp.id;
-    });
+  }
 
-    this.setState({ slectedCompQues: filteredQues });
+  getQuestioners(compId) {
+    return filter(this.props.questioners, ques => {
+      return ques.compentency_id === compId;
+    });
+  }
+
+  onselect(comp, index) {
+    let filteredQues = this.getQuestioners(comp.id);
+
+    this.setState({
+      selectedCompQues: filteredQues,
+      selectedIndex: index,
+      selectedComp: comp
+    });
   }
 
   render() {
-    const { competencies, questioners, slectedCompQues } = this.state;
-    const { selectedCompetencies } = this.props;
+    const { selectedCompQues, selectedIndex, selectedComp } = this.state;
+    const { selectedCompetencies, competencies, questioners } = this.props;
 
     const fiteredObjs = filter(competencies, comp => {
       return selectedCompetencies.includes(comp.id);
     });
 
     return (
-      <div className="vertical_tabs">
-        <Tabs onSelect={this.onselect}>
-          <TabList>
-            {map(fiteredObjs, comp => {
-              return <Tab>{comp.title}</Tab>;
-            })}
-          </TabList>
-
-          {map(fiteredObjs, filtered => {
+      <div className="row vertical_tabs">
+        <div className="col-md-3 tabs_list">
+          {map(fiteredObjs, (comp, index) => {
             return (
-              <TabPanel>
-                <Questioners allquestions={questioners} questions={slectedCompQues} />
-              </TabPanel>
+              <div
+                className={`competency_tab ${
+                  selectedIndex === index ? "selection" : ""
+                }`}
+                onClick={() => {
+                  this.onselect(comp, index);
+                }}
+              >
+                {comp.title}
+              </div>
             );
           })}
-        </Tabs>
+        </div>
+        <div className="col-md-9">
+          <Questioners
+            selectedComp={selectedComp}
+            allquestions={questioners}
+            questions={selectedCompQues}
+          />
+        </div>
+        <div className="buttons_panel">
+          <button
+            onClick={() => {
+              this.props.previousStep();
+            }}
+          >
+            Back
+          </button>
+          <button
+            onClick={() => {
+              this.props.nextStep();
+            }}
+          >
+            Next
+          </button>
+          <button className="cancel_button"
+            onClick={() => {
+              this.props.firstStep();
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       </div>
     );
   }

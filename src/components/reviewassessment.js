@@ -1,45 +1,86 @@
-
-
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import dropIcon from '../assets/img/dropdown.png';
-import userIcon from '../assets/img/Frame.png';
-import StepWizard from 'react-step-wizard';
-import CompetencySelection from './competencySelection';
-
+import dropIcon from "../assets/img/dropdown.png";
+import userIcon from "../assets/img/Frame.png";
+import StepWizard from "react-step-wizard";
+import CompetencySelection from "./competencySelection";
+import { get, groupBy, filter, map, find } from "lodash";
 
 class ReviewAssessment extends Component {
   constructor(props) {
     super(props);
   }
 
-  render() {
-    return (
-      <div></div>
+  renderQuestioner() {
     
-    //  <div className='header-panel row'>
-    //    <div className=" col-md-8">
-    //         <span>Welcome</span>
-    //         <span className="user_name">Nimish,</span>
-    //    </div>
-    //     <div className=" user-panel col-md-4">
-    //             <div className="evaluation-dropdown">
-    //                 <span>360 Evaluation</span>
-    //                 <img src={dropIcon}></img>
-    //             </div>
-    //             <div className="user-details">
-    //                 <img className="user-icon" src={userIcon} ></img>
-    //                 <span>Nimish</span>
-    //                 <img src={dropIcon}></img>
-    //             </div>
-    //     </div>
-    //  </div>
+    const { questioners, selectedQuestioner } = this.props;
+    let groupedQuestions = groupBy(
+      filter(questioners, ques => {
+        return selectedQuestioner.includes(ques.id);
+      }),
+      "compentency_id"
     );
+
+    if (groupedQuestions.length === 0) 
+            return
+
+    return map(groupedQuestions, group => {
+      return this.renderQuestionerBlock(group);
+    });
+  }
+
+  renderQuestionerBlock(group) {
+  
+    let comp = find(this.props.competencies, comp => {
+      return comp.id === group[0].compentency_id;
+    });
+    return (
+      <div className="questioners_panel">
+        <div className="header">{comp.title}</div>
+        {map(group, ques => {
+          return <div className="question">{ques.title}</div>;
+        })}
+      </div>
+    );
+  }
+
+  render() {
+    const { selectedQuestioner } = this.props;
+    return <div className="review_selection">
+        <div>Questionnaire Preview</div>
+        {this.renderQuestioner()}
+        <div className="buttons_panel">
+          <button
+            onClick={() => {
+              this.props.previousStep();
+            }}
+          >
+            Back
+          </button>
+          <button
+            onClick={() => {
+              this.props.nextStep();
+            }}
+          >
+            Next
+          </button>
+          <button className="cancel_button"
+            onClick={() => {
+              this.props.firstStep();
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>;
   }
 }
 
 export default connect(
-  null,
-  { 
-  }
+  state => {
+    return {
+      selectedQuestioner: get(state, "secondassessment.selectedQuestioner")
+    };
+  },
+  {}
 )(ReviewAssessment);

@@ -12,7 +12,7 @@ class CompetencySelection extends Component {
   constructor (props) {
     super (props);
     this.state = {
-      competencies: getCompetencies (),
+      // competencies: getCompetencies (),
     };
   }
 
@@ -47,7 +47,7 @@ class CompetencySelection extends Component {
 
   render () {
  
-    const {competencies} = this.state;
+    const {competencies} = this.props;
     const groups = groupBy (competencies, 'groupId');
 
     const renderer = [];
@@ -73,7 +73,7 @@ class CompetencySelection extends Component {
             <button onClick={()=>{this.props.nextStep()}}>
               Next 
             </button>
-            <button onClick={()=>{this.props.firstStep()}}>
+            <button className="cancel_button" onClick={()=>{this.props.firstStep()}}>
               Cancel 
             </button>
         </div>

@@ -5,11 +5,11 @@ import {
   SELECT_QUESTIONS
 } from "../actions/actionTypes";
 import { selectCompentencies } from "../actions/seconassesment.action";
-import { filter,union } from "lodash";
+import { filter, union } from "lodash";
 
 let initialState = {
   selectedCompetencies: [],
-  selectedQuestioner:[]
+  selectedQuestioner: []
 };
 
 export default function secondassessment(state = initialState, action) {
@@ -27,11 +27,10 @@ export default function secondassessment(state = initialState, action) {
       };
 
     case SELECT_QUESTIONS:
-    let newArray=union(state.selectedQuestioner,action.questions)
-    return{
-      ...state,
-      selectedQuestioner:[...newArray]
-    }
+      return {
+        ...state,
+        selectedQuestioner: [...action.questions]
+      };
 
     default:
       return { ...state };
