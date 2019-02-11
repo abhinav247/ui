@@ -76,8 +76,18 @@ tbody tr td:nth-child(2){
 }
 
 
+.employee-type{
+  input{
+    width:30px;
+  }
+}
+
+
 tbody tr .employee-type{
   background-color: #0f9014;
+}
+tbody tr .candidate-type{
+  background-color: #f44336;
 }
 
 

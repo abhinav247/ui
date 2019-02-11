@@ -47,6 +47,8 @@ export const getCompetencies = () => {
 
 
 
+
+
 const createQuestioners = (noofTimes, com_id, group_id,questioners) => {
   let questlenth = questioners.length;
   for (

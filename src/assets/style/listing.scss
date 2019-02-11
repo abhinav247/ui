@@ -48,6 +48,8 @@
     }
   }
 
+ 
+
   .assestment-details {
     padding: 12px;
     border-radius: 5px;
@@ -104,4 +106,19 @@
       border: 0;
     }
   }
+
+  .delete_assessment{
+    background-color: #005181;
+    img{
+        height: 24px;
+    }
+  }
+
+  .expander{
+    // width:10px;
+    img{
+      height: 16px;
+    }
+  }
+
 }

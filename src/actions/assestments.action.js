@@ -21,7 +21,7 @@ export const defaultParticipant = {
 
 export const defaultAssestment = {
   assessment_title: "Hr Manager",
-  type: "employee",
+  type: "E",
   total_participants: 0,
   status: "Draft",
   startDate: moment(),
@@ -98,6 +98,21 @@ export const addAssesment = () => dispatch => {
     });
 };
 
+
+
+
+export const sendemail= (participantId)= dispatch => {
+  dispatch(beginAjaxCall());
+  putResource(`${url}/assessment/sendMail/${participantId}`)
+    .then(res => {
+      debugger;
+      dispatch(endAjaxCall());
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
 export const onAddParticipant = assestmentid => dispatch => {
   dispatch(beginAjaxCall());
   postResource(`${url}/assessment/addprimarypart`, {
@@ -120,6 +135,15 @@ const onaddparticipant = data => {
 
 const addassesment = data => {
   return { type: ADD_ASSESTMENT, data };
+};
+
+
+export const deleteassessment= (assesmentId)=> dispatch => {
+  dispatch(beginAjaxCall());
+  deleteResource(`${url}/assessment/delete/${assesmentId}`).then(res => {
+    dispatch(allassessments(get(res, "data")));
+    dispatch(endAjaxCall());
+  });
 };
 
 export const deleteParticipant = (participantId, assesmentId) => dispatch => {

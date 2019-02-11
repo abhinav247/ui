@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "file-upload-react": "^0.1.2",
     "moment": "^2.23.0",
     "node-sass": "^4.11.0",
     "react": "^16.8.1",

@@ -5,18 +5,28 @@ import moment from "moment";
 import {
   onAddParticipant,
   updateParticipant,
-  deleteParticipant
+  deleteParticipant,
+  
 } from "../actions/assestments.action";
+import {sendemail} from '../actions/assestments.action';
+
 
 class Primary extends Component {
   constructor(props) {
     super(props);
     this.addParticipant = this.addParticipant.bind(this);
+    this.sendMail=this.sendMail.bind(this);
   }
 
   addParticipant(assestmentId) {
     const { onAddParticipant } = this.props;
     onAddParticipant(assestmentId);
+  }
+
+
+  sendMail(participantId){
+    const {sendemail}=this.props;
+    sendemail(participantId);
   }
 
   render() {
@@ -93,11 +103,12 @@ class Primary extends Component {
                         <button
                           className="report"
                           onClick={e => {
-                            updateParticipant(
-                              participant._id,
-                              "mail_status",
-                              true
-                            );
+                            this.sendMail(participant._id)
+                            // updateParticipant(
+                            //   participant._id,
+                            //   "mail_status",
+                            //   true
+                            // );
                           }}
                         >
                           Send Email
@@ -135,6 +146,7 @@ export default connect(
   {
     onAddParticipant,
     updateParticipant,
-    deleteParticipant
+    deleteParticipant,
+    sendemail
   }
 )(Primary);
