@@ -3,10 +3,18 @@ import { get, map, find } from "lodash";
 import { connect } from "react-redux";
 import Assestments from "./assestments";
 import searchIcon from "../assets/img/search.png";
+import {confirm} from '../actions/seconassesment.action';
 
 class EmailTemplate extends Component {
   constructor(props) {
     super(props);
+  }
+
+
+  confirmQuestioner(){
+    const {questions,confirm,assesment}=this.props;
+    confirm(questions,assesment._id);
+   
   }
 
   render() {
@@ -29,7 +37,7 @@ class EmailTemplate extends Component {
           </button>
           <button
             onClick={() => {
-            //   this.props.nextStep();
+              this.confirmQuestioner()
             }}
           >
             confirm
@@ -50,8 +58,8 @@ class EmailTemplate extends Component {
 export default connect(
   state => {
     return {
-      listing: get(state, "assesments")
+      questions: get(state, "secondassessment.selectedQuestioner")
     };
   },
-  {}
+  {confirm}
 )(EmailTemplate);

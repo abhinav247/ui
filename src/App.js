@@ -9,7 +9,11 @@ import './assets/style/main.scss';
 import TopPanel from './components/topPanel';
 import Listing from './components/listing';
 import Loader from "react-loader";
-
+import {
+  getallgroups,
+  getallquestioners,
+  getallcompetency
+} from "./actions/seconassesment.action";
 
 class App extends Component {
   constructor (props) {
@@ -17,8 +21,11 @@ class App extends Component {
   }
 
   componentWillMount () {
-    const {getAllAssessment}=this.props;
+    const {getAllAssessment, getallcompetency, getallgroups, getallquestioners}=this.props;
     getAllAssessment();
+    getallgroups();
+    getallcompetency();
+    getallquestioners();
   }
 
   render () {
@@ -41,5 +48,5 @@ export default connect (
       loading: state.ajaxStatus > 0,
     };
   },
-  {getAllAssessment}
+  {getAllAssessment,getallgroups,getallcompetency,getallquestioners}
 ) (App);

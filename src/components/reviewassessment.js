@@ -13,12 +13,12 @@ class ReviewAssessment extends Component {
 
   renderQuestioner() {
     
-    const { questioners, selectedQuestioner } = this.props;
+    const { questions, selectedQuestioner } = this.props;
     let groupedQuestions = groupBy(
-      filter(questioners, ques => {
-        return selectedQuestioner.includes(ques.id);
+      filter(questions, ques => {
+        return selectedQuestioner.includes(ques._id);
       }),
-      "compentency_id"
+      "competency_id"
     );
 
     if (groupedQuestions.length === 0) 
@@ -31,8 +31,8 @@ class ReviewAssessment extends Component {
 
   renderQuestionerBlock(group) {
   
-    let comp = find(this.props.competencies, comp => {
-      return comp.id === group[0].compentency_id;
+    let comp = find(this.props.competency, comp => {
+      return comp._id === group[0].competency_id;
     });
     return (
       <div className="questioners_panel">

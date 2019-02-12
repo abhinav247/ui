@@ -19,7 +19,8 @@ class Questioners extends Component {
     const { questions } = this.props;
     return (
       <div className="questioner_selection">
-        <CheckboxGroup
+        <CheckboxGroup 
+          value={this.props.selectedQuestioner}
           checkboxDepth={2}
           name="questions"
           onChange={this.selectQuestioner}
@@ -27,7 +28,7 @@ class Questioners extends Component {
           {map(questions, ques => {
             return (
               <label className="round">
-                <Checkbox value={ques.id} />
+                <Checkbox value={ques._id} />
                 <label for="checkbox"></label>
                 {ques.title}
               </label>
@@ -44,7 +45,7 @@ class Questioners extends Component {
 export default connect(
   state => {
     return {
-      //   listing: get(state, "assesments")
+      selectedQuestioner: get(state, "secondassessment.selectedQuestioner")
     };
   },
   { selectQuestiones }

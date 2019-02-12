@@ -8,8 +8,9 @@ import {
   deleteParticipant,
   uploadFiles
 } from "../actions/assestments.action";
+import { setEditMode } from "../actions/seconassesment.action";
 import { sendemail } from "../actions/assestments.action";
-import {get} from 'lodash';
+import { get } from "lodash";
 
 class Primary extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Primary extends Component {
     this.sendMail = this.sendMail.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
     this.afterFileSelection = this.afterFileSelection.bind(this);
+    this.onEditMode = this.onEditMode.bind(this);
   }
 
   addParticipant(assestmentId) {
@@ -30,16 +32,20 @@ class Primary extends Component {
     el.click();
   }
 
-  afterFileSelection(event,assesmentId) {
-    debugger;
+  afterFileSelection(event, assesmentId) {
     const { uploadFiles } = this.props;
     let file = event.target.files[0];
-    uploadFiles(file,assesmentId)
+    uploadFiles(file, assesmentId);
   }
 
   sendMail(participantId) {
     const { sendemail } = this.props;
     sendemail(participantId);
+  }
+
+  onEditMode() {
+    const { setEditMode } = this.props;
+    setEditMode(true);
   }
 
   render() {
@@ -48,7 +54,8 @@ class Primary extends Component {
       fieldEditing,
       updateParticipant,
       deleteParticipant,
-      file
+      file,
+      assessmentStage
     } = this.props;
     const { primary, _id } = this.props.assesment;
     const { startDate, endDate, no_response, participants } = primary;
@@ -84,17 +91,40 @@ class Primary extends Component {
               Add Participant
             </button>
 
-            <input
-              type="file"
-              id="selectedFile"
-              className="upload_details"
-              style={{ visibility: "hidden " }}
-              onChange={e=>{this.afterFileSelection(e,_id)}}
-            />
-
-            <button className="upload_details" onClick={this.uploadFile}>
-              { file!==null?file:'Upload Job Description'}
-            </button>
+            {(() => {
+              if (assessmentStage === "secondary") {
+                return (
+                  <button
+                    className="upload_details"
+                    onClick={() => {
+                      this.onEditMode();
+                    }}
+                  >
+                    Edit
+                  </button>
+                );
+              } else {
+                return (
+                  <div>
+                    <input
+                      type="file"
+                      id="selectedFile"
+                      className="upload_details"
+                      style={{ visibility: "hidden " }}
+                      onChange={e => {
+                        this.afterFileSelection(e, _id);
+                      }}
+                    />
+                    <button
+                      className="upload_details"
+                      onClick={this.uploadFile}
+                    >
+                      {file !== undefined ? file : "Upload Job Description"}
+                    </button>
+                  </div>
+                );
+              }
+            })()}
           </div>
         </div>
         <div className="participant-listing row">
@@ -167,16 +197,17 @@ class Primary extends Component {
 }
 
 export default connect(
-  state=>{
+  state => {
     return {
-      file:get(state,'secondassessment.fileattached')
-    }
+      file: get(state, "secondassessment.fileattached")
+    };
   },
   {
     onAddParticipant,
     updateParticipant,
     deleteParticipant,
     sendemail,
+    setEditMode,
     uploadFiles
   }
 )(Primary);

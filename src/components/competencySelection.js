@@ -7,7 +7,7 @@ import {
   selectCompentencies
 } from "../actions/seconassesment.action";
 import { groupBy, mapValues, find, map, get } from "lodash";
-import { groups } from "../actions/seconassesment.action";
+
 import selectionIcon from '../assets/img/selection.png'
 
 class CompetencySelection extends Component {
@@ -18,15 +18,15 @@ class CompetencySelection extends Component {
     };
   }
 
-  selectCompetencies(comp) {
-    const { selectCompentencies } = this.props;
-    selectCompentencies(comp.id);
+  selectCompetencies(comp){
+      const {selectCompentencies}=this.props;
+      selectCompentencies(comp._id)
   }
 
-  renderCompetencies(group) {
-    const { selectedCompentencies } = this.props;
-    let selectedGroup = find(groups, function(o) {
-      return o.id === group[0].groupId;
+  renderCompetencies (group) {
+    const {selectedCompentencies}=this.props;
+    let selectedGroup = find (this.props.groups, function (o) {
+      return o._id === group[0].group_id;
     });
 
     return (
@@ -36,10 +36,10 @@ class CompetencySelection extends Component {
           {map(group, comp => {
             return (
               <div className="competency__panel">
-              {selectedCompentencies.includes(comp.id)?<img className="selection_img" src={selectionIcon}></img>:''}
+              {selectedCompentencies.includes(comp._id)?<img className="selection_img" src={selectionIcon}></img>:''}
               <div
                 className={`competency ${
-                  selectedCompentencies.includes(comp.id) ? "selection" : ""
+                  selectedCompentencies.includes(comp._id) ? "selection" : ""
                 }`}
                 onClick={() => {
                   this.selectCompetencies(comp);
@@ -55,9 +55,10 @@ class CompetencySelection extends Component {
     );
   }
 
-  render() {
-    const { competencies } = this.props;
-    const groups = groupBy(competencies, "groupId");
+  render () {
+ 
+    const {competency} = this.props;
+    const groups = groupBy (competency, 'group_id');
 
     const renderer = [];
     mapValues(groups, group => {

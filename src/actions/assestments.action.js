@@ -105,7 +105,6 @@ export const addAssesment = () => dispatch => {
   dispatch(beginAjaxCall());
   postResource(`${url}/assessment/create`, defaultAssestment)
     .then(res => {
-      debugger;
       dispatch(endAjaxCall());
       dispatch(addassesment(get(res, "data")));
     })
@@ -118,7 +117,6 @@ export const sendemail = participantId => dispatch => {
   dispatch(beginAjaxCall());
   putResource(`${url}/assessment/sendMail/${participantId}`)
     .then(res => {
-      debugger;
       dispatch(endAjaxCall());
     })
     .catch(error => {
@@ -153,13 +151,14 @@ const addassesment = data => {
 export const uploadFiles = (file, assesmentId) => dispatch => {
   dispatch(beginAjaxCall());
   uploadFile(`${url}/assessment/addjobdesc/${assesmentId}`, file).then(res => {
-    
     dispatch(fileattached(file));
     dispatch(endAjaxCall());
   });
 };
 
-const fileattached= file=>{return {type:FILE_ATTACHED,file}}
+const fileattached = file => {
+  return { type: FILE_ATTACHED, file };
+};
 
 export const deleteassessment = assesmentId => dispatch => {
   dispatch(beginAjaxCall());

@@ -1,24 +1,32 @@
-import React, {Component} from 'react';
-import {get} from 'lodash';
-import {connect} from 'react-redux';
-import expanderIcon from '../assets/img/hamburger.png';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import PrimaryAssestment from './primaryassestment';
-import moment from 'moment';
+import React, { Component } from "react";
+import { get, map, uniqBy, filter } from "lodash";
+import { connect } from "react-redux";
+import expanderIcon from "../assets/img/hamburger.png";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+import PrimaryAssestment from "./primaryassestment";
+import moment from "moment";
 import {
   updateField,
   updateAssessment,
   updateParticipant,
   updatePaticipantField,
   deleteassessment
-} from '../actions/assestments.action';
-import SecondaryAssessment from './secondaryAssessment';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import expander from '../assets/img/expander.png';
-import deleteIcon from '../assets/img/delete.png';
+} from "../actions/assestments.action";
+import SecondaryAssessment from "./secondaryAssessment";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import expander from "../assets/img/expander.png";
+import deleteIcon from "../assets/img/delete.png";
+import {
+  selectCompentencies,
+  selectQuestiones
+} from "../actions/seconassesment.action";
 
+import { postResource, getResource } from "../actions/assestments.action";
+import { stat } from "fs";
+
+let url = "http://localhost:3600";
 class Assestments extends Component {
   constructor(props) {
     super(props);
@@ -26,27 +34,26 @@ class Assestments extends Component {
       data: [],
       expandedRows: [],
       open: false,
-      value: '',
+      value: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.onChange = this.onChange.bind(this);
     this.editField = this.editField.bind(this);
-    this.onDelete=this.onDelete.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
-  
 
-  onDelete(assesmentId){
-    const {deleteassessment}=this.props;
+  onDelete(assesmentId) {
+    const { deleteassessment } = this.props;
     deleteassessment(assesmentId);
   }
 
   getComponent(row, field, fieldEditing, controlId, classname) {
     // const { event_status } = row;
     const self = this;
-    if (fieldEditing !== '' && fieldEditing === controlId) {
+    if (fieldEditing !== "" && fieldEditing === controlId) {
       switch (field) {
-        case 'closingDate':
-          let selectedDate = moment(row[field]).format('yyyy/MM/dd');
+        case "closingDate":
+          let selectedDate = moment(row[field]).format("yyyy/MM/dd");
           return (
             <div ref={node => (this[controlId] = node)}>
               <DatePicker
@@ -75,22 +82,22 @@ class Assestments extends Component {
     }
 
     switch (field) {
-      case 'closingDate':
+      case "closingDate":
         return (
           <div
-            className={classname ? classname : ''}
+            className={classname ? classname : ""}
             id={controlId}
             onClick={e => {
               self.editField(e, field, row);
             }}
           >
-            {moment(row[field]).format('DD-MM-YYYY')}
+            {moment(row[field]).format("DD-MM-YYYY")}
           </div>
         );
       default:
         return (
           <div
-            className={classname ? classname : ''}
+            className={classname ? classname : ""}
             id={controlId}
             onClick={e => {
               self.editField(e, field, row);
@@ -103,28 +110,28 @@ class Assestments extends Component {
   }
 
   componentWillMount() {
-    document.addEventListener('mousedown', this.handleClick, false);
+    document.addEventListener("mousedown", this.handleClick, false);
   }
 
   onChange(id, field, value) {
-    const {data} = this.state;
-    const {updateField, updatePaticipantField} = this.props;
+    const { data } = this.state;
+    const { updateField, updatePaticipantField } = this.props;
 
-    if (['name', 'email'].includes(field)) {
+    if (["name", "email"].includes(field)) {
       updatePaticipantField(id, field, value);
     } else {
       updateField(id, field, value);
     }
 
-    this.setState({updatedValue: value});
+    this.setState({ updatedValue: value });
   }
 
   componentWillUnMount() {
-    document.removeEventListener('mousedown', this.handleClick, false);
+    document.removeEventListener("mousedown", this.handleClick, false);
   }
 
   handleClick(e) {
-    const {fieldEditing} = this.state;
+    const { fieldEditing } = this.state;
 
     if (this[fieldEditing] && this[fieldEditing].contains(e.target)) {
       return;
@@ -141,19 +148,21 @@ class Assestments extends Component {
       ? currentExpandedRows.filter(_id => _id !== rowId)
       : currentExpandedRows.concat(rowId);
 
-    this.setState({expandedRows: newExpandedRows});
+    this.setState({ expandedRows: newExpandedRows });
   }
 
   editField(e, field, row) {
     this.setState({
       fieldEditing: e.target.id,
       controlId: row._id,
-      field: field,
+      field: field
     });
   }
 
   RenderJobDescription(assesment) {
-    const {fieldEditing} = this.state;
+    const { editMode } = this.props;
+    const { assessment_stage } = assesment;
+    const { fieldEditing } = this.state;
     return (
       <Tabs>
         <TabList>
@@ -173,7 +182,16 @@ class Assestments extends Component {
         </TabPanel>
         <TabPanel>
           <h2>
-            <SecondaryAssessment />
+            {assessment_stage === "secondary" && editMode == false ? (
+              <PrimaryAssestment
+                getComponent={this.getComponent.bind(this)}
+                fieldEditing={fieldEditing}
+                assesment={assesment}
+                assessmentStage="secondary"
+              />
+            ) : (
+              <SecondaryAssessment assesment={assesment} />
+            )}
           </h2>
         </TabPanel>
       </Tabs>
@@ -181,104 +199,125 @@ class Assestments extends Component {
   }
 
   saveChanges() {
-    const {fieldEditing, controlId, field} = this.state;
-    let extendedValue= this.state.updatedValue
-    const {updateAssessment, updateParticipant} = this.props;
+    const { fieldEditing, controlId, field } = this.state;
+    let extendedValue = this.state.updatedValue;
+    const { updateAssessment, updateParticipant } = this.props;
     if (this[fieldEditing]) {
-      if (extendedValue !== '') {
-        if (['name', 'email'].includes(field)) {
+      if (extendedValue !== "") {
+        if (["name", "email"].includes(field)) {
           updateParticipant(controlId, field, extendedValue);
         } else {
-         
           extendedValue =
-            field == 'closingDate' ? moment(extendedValue) : extendedValue;
+            field == "closingDate" ? moment(extendedValue) : extendedValue;
 
-         
           updateAssessment(controlId, field, extendedValue);
         }
       }
     }
     this.setState({
-      fieldEditing: '',
-      controlId: '',
-      field: '',
-      updatedValue: '',
+      fieldEditing: "",
+      controlId: "",
+      field: "",
+      updatedValue: ""
     });
   }
 
   renderItem(assesment) {
-    const {fieldEditing} = this.state;
-    const {_id} = assesment;
+    const { assessment_stage, questioner } = assesment;
+    const { editMode,questions,selectCompentencies,selectQuestiones,selectedCompetencies } = this.props;
+    if (editMode && questioner.length > 0 && selectedCompetencies.length===0) {
+      let selectedComps = uniqBy(
+        filter(questions, ques => {
+          return questioner.includes(ques._id);
+        }),
+        ques => {
+          return ques.competency_id;
+        }
+      );
+      map(selectedComps,comp=>{
+        selectCompentencies(comp.competency_id)
+      })
+      selectQuestiones(questioner)
+      
+    }
+
+    const { fieldEditing } = this.state;
+    const { _id } = assesment;
     const clickCallback = () => this.handleRowClick(assesment._id);
 
     const assetType = type => {
       switch (type) {
-        case 'E':
-          return 'employee-type';
-        case 'C':
-          return 'candidate-type';
+        case "E":
+          return "employee-type";
+        case "C":
+          return "candidate-type";
         default:
-          return 'employee-type';
+          return "employee-type";
       }
     };
 
     const itemRows = [
       <tr
-        key={'row-data-' + assesment._id}
+        key={"row-data-" + assesment._id}
         className={
           this.state.expandedRows.includes(assesment._id)
-            ? 'active'
-            : 'item-row'
+            ? "active"
+            : "item-row"
         }
       >
         <td className={`${assetType(assesment.type)}`}>
           {this.getComponent(
             assesment,
-            'type',
+            "type",
             fieldEditing,
             `type_${_id}`,
-            'type'
+            "type"
           )}
         </td>
         <td>
-          <div style={{fontFamily: 'robotobold'}}>
+          <div style={{ fontFamily: "robotobold" }}>
             {this.getComponent(
               assesment,
-              'assessment_title',
+              "assessment_title",
               fieldEditing,
               `assessment_title_${_id}`,
-              'assessment_title'
+              "assessment_title"
             )}
             {/* {assesment.assessment_title} */}
           </div>
           <div>{assesment.status}</div>
         </td>
         <td>{assesment.total_participants}</td>
-        <td style={{color: '#ffc107'}}>{assesment.status}</td>
+        <td style={{ color: "#ffc107" }}>{assesment.status}</td>
         <td>no response </td>
 
         {/* <td className={`job-signal ${getSignalClass(jobSignal)} `}> */}
         <td>
           {this.getComponent(
             assesment,
-            'closingDate',
+            "closingDate",
             fieldEditing,
             `closingDate_${_id}`,
-            'closingDate'
+            "closingDate"
           )}
         </td>
-        <td onClick={()=>{this.onDelete(_id)}} className="delete_assessment">
+        <td
+          onClick={() => {
+            this.onDelete(_id);
+          }}
+          className="delete_assessment"
+        >
           <img src={deleteIcon} />
         </td>
         <td onClick={clickCallback} className="expander">
           <img src={expander} />
         </td>
-      </tr>,
+      </tr>
     ];
 
     if (this.state.expandedRows.includes(assesment._id)) {
       itemRows.push(
-        <tr key={'row-expanded-' + assesment._id} className="row__expanded">
+        <tr key={"row-expanded-" + assesment._id} className="row__expanded">
           <td colspan={7}>{this.RenderJobDescription(assesment)}</td>
         </tr>
       );
@@ -289,7 +328,7 @@ class Assestments extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.listing !== nextProps.listing)
-      this.setState({data: nextProps.listing});
+      this.setState({ data: nextProps.listing });
   }
 
   render() {
@@ -321,8 +360,21 @@ class Assestments extends Component {
 export default connect(
   state => {
     return {
-      listing: get(state, 'assesmentdetails.assesments'),
+      listing: get(state, "assesmentdetails.assesments"),
+      editMode: get(state, "secondassessment.editMode"),
+      groups: get(state, "secondassessment.groups"),
+      competency: get(state, "secondassessment.competency"),
+      questions: get(state, "secondassessment.questions"),
+      selectedCompetencies: get(state, "secondassessment.selectedCompetencies")
     };
   },
-  {updateField, updateAssessment, updatePaticipantField, updateParticipant,deleteassessment}
+  {
+    updateField,
+    updateAssessment,
+    updatePaticipantField,
+    updateParticipant,
+    deleteassessment,
+    selectCompentencies,
+    selectQuestiones
+  }
 )(Assestments);

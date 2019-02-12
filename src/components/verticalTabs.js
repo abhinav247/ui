@@ -25,7 +25,9 @@ class VerticalTabs extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     if (
-      nextProps.selectedCompetencies[0] !== this.props.selectedCompetencies[0]
+      nextProps.selectedCompetencies[0] !==
+        this.props.selectedCompetencies[0] &&
+      nextProps.selectedCompetencies.length > 0
     ) {
       let { selectedCompetencies } = nextProps;
       this.setState({
@@ -36,19 +38,19 @@ class VerticalTabs extends React.PureComponent {
   }
 
   findCompetency(CompId) {
-    return find(this.props.competencies, comp => {
-      return comp.id === CompId;
+    return find(this.props.competency, comp => {
+      return comp._id === CompId;
     });
   }
 
   getQuestioners(compId) {
-    return filter(this.props.questioners, ques => {
-      return ques.compentency_id === compId;
+    return filter(this.props.questions, ques => {
+      return ques.competency_id === compId;
     });
   }
 
   onselect(comp, index) {
-    let filteredQues = this.getQuestioners(comp.id);
+    let filteredQues = this.getQuestioners(comp._id);
 
     this.setState({
       selectedCompQues: filteredQues,
@@ -59,12 +61,11 @@ class VerticalTabs extends React.PureComponent {
 
   render() {
     const { selectedCompQues, selectedIndex, selectedComp } = this.state;
-    const { selectedCompetencies, competencies, questioners } = this.props;
+    const { selectedCompetencies, competency, questions } = this.props;
 
-    const fiteredObjs = filter(competencies, comp => {
-      return selectedCompetencies.includes(comp.id);
+    const fiteredObjs = filter(competency, comp => {
+      return selectedCompetencies.includes(comp._id);
     });
-
     return (
       <div className="row vertical_tabs">
         <div className="col-md-3 tabs_list">
@@ -86,7 +87,7 @@ class VerticalTabs extends React.PureComponent {
         <div className="col-md-9 question_list">
           <Questioners
             selectedComp={selectedComp}
-            allquestions={questioners}
+            allquestions={questions}
             questions={selectedCompQues}
           />
         </div>
@@ -105,7 +106,8 @@ class VerticalTabs extends React.PureComponent {
           >
             Next
           </button>
-          <button className="cancel_button"
+          <button
+            className="cancel_button"
             onClick={() => {
               this.props.firstStep();
             }}
