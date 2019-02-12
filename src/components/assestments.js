@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {get} from 'lodash';
+import {get, map} from 'lodash';
 import {connect} from 'react-redux';
 import expanderIcon from '../assets/img/hamburger.png';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
@@ -11,7 +11,7 @@ import {
   updateAssessment,
   updateParticipant,
   updatePaticipantField,
-  deleteassessment
+  deleteassessment,
 } from '../actions/assestments.action';
 import SecondaryAssessment from './secondaryAssessment';
 import DatePicker from 'react-datepicker';
@@ -19,6 +19,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import expander from '../assets/img/expander.png';
 import deleteIcon from '../assets/img/delete.png';
 
+import {postResource, getResource} from '../actions/assestments.action';
+
+let url = 'http://localhost:3600';
 class Assestments extends Component {
   constructor(props) {
     super(props);
@@ -31,12 +34,11 @@ class Assestments extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.onChange = this.onChange.bind(this);
     this.editField = this.editField.bind(this);
-    this.onDelete=this.onDelete.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
-  
 
-  onDelete(assesmentId){
-    const {deleteassessment}=this.props;
+  onDelete(assesmentId) {
+    const {deleteassessment} = this.props;
     deleteassessment(assesmentId);
   }
 
@@ -104,6 +106,10 @@ class Assestments extends Component {
 
   componentWillMount() {
     document.addEventListener('mousedown', this.handleClick, false);
+
+    getResource(`${url}/secondary/competency`).then(res => {
+      this.setState({groups: res.data});
+    });
   }
 
   onChange(id, field, value) {
@@ -182,18 +188,16 @@ class Assestments extends Component {
 
   saveChanges() {
     const {fieldEditing, controlId, field} = this.state;
-    let extendedValue= this.state.updatedValue
+    let extendedValue = this.state.updatedValue;
     const {updateAssessment, updateParticipant} = this.props;
     if (this[fieldEditing]) {
       if (extendedValue !== '') {
         if (['name', 'email'].includes(field)) {
           updateParticipant(controlId, field, extendedValue);
         } else {
-         
           extendedValue =
             field == 'closingDate' ? moment(extendedValue) : extendedValue;
 
-         
           updateAssessment(controlId, field, extendedValue);
         }
       }
@@ -267,7 +271,12 @@ class Assestments extends Component {
             'closingDate'
           )}
         </td>
-        <td onClick={()=>{this.onDelete(_id)}} className="delete_assessment">
+        <td
+          onClick={() => {
+            this.onDelete(_id);
+          }}
+          className="delete_assessment"
+        >
           <img src={deleteIcon} />
         </td>
         <td onClick={clickCallback} className="expander">
@@ -324,5 +333,11 @@ export default connect(
       listing: get(state, 'assesmentdetails.assesments'),
     };
   },
-  {updateField, updateAssessment, updatePaticipantField, updateParticipant,deleteassessment}
+  {
+    updateField,
+    updateAssessment,
+    updatePaticipantField,
+    updateParticipant,
+    deleteassessment,
+  }
 )(Assestments);

@@ -9,25 +9,37 @@ import ReviewAssessment from "./reviewassessment";
 import EmailTemplate from "./emailTemplate";
 import {
   selectCompentencies,
-  getCompetencies,
-  getQuestioners
+  getallgroups,
+  getallquestioners,
+  getallcompetency
 } from "../actions/seconassesment.action";
+import { get } from "https";
+import { stat } from "fs";
 
 class SecondaryAssessment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      competencies: getCompetencies(),
-      questioners: getQuestioners()
+      // competencies: getCompetencies(),
+      // questioners: getQuestioners()
     };
   }
 
+  componentWillMount(){
+    debugger;
+    const {getallcompetency,getallgroups,getallquestioners}=this.props;
+    getallgroups();
+    getallcompetency();
+    getallquestioners();
+  }
+
   render() {
+    
     return (
       <StepWizard>
-        <CompetencySelection {...this.state} />
-        <VerticalTabs {...this.state} />
-        <ReviewAssessment {...this.state} />
+        <CompetencySelection {...this.props} />
+        <VerticalTabs {...this.props} />
+        <ReviewAssessment {...this.props} />
         <EmailTemplate />
       </StepWizard>
     );
@@ -35,6 +47,12 @@ class SecondaryAssessment extends Component {
 }
 
 export default connect(
-  null,
-  {}
+  state=>{
+    return {
+      groups:get(state,'secondassessment.groups'),
+      competency:get(state,'secondassessment.competency'),
+      questions:get(state,'secondassessment.questions')
+    }
+  },
+  {getallcompetency,getallgroups,getallquestioners}
 )(SecondaryAssessment);

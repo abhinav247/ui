@@ -7,6 +7,7 @@ import {
   UPDATE_FIELD,
   UPDATE_EVENT_FIELD,
   UPDATE_PARTICIPANT,
+ 
   UPDATE_PARTICIPANT_FIELD
 } from "./actionTypes";
 import { beginAjaxCall, endAjaxCall } from "./ajaxstatus.action";
@@ -33,7 +34,7 @@ export const defaultAssestment = {
   }
 };
 
-let url = "http://ec2-52-77-229-152.ap-southeast-1.compute.amazonaws.com:3600";
+let url = "http://localhost:3600";
 
 // let url = "http://localhost:5002";
 export const postResource = (url, content) => {
@@ -85,6 +86,9 @@ export const putResource = (url, content) => {
     });
 };
 
+
+
+
 export const addAssesment = () => dispatch => {
   dispatch(beginAjaxCall());
   postResource(`${url}/assessment/create`, defaultAssestment)
@@ -101,7 +105,7 @@ export const addAssesment = () => dispatch => {
 
 
 
-export const sendemail= (participantId)= dispatch => {
+export const sendemail= (participantId)=> dispatch => {
   dispatch(beginAjaxCall());
   putResource(`${url}/assessment/sendMail/${participantId}`)
     .then(res => {

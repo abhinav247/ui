@@ -4,7 +4,7 @@ import dropIcon from '../assets/img/dropdown.png';
 import userIcon from '../assets/img/Frame.png';
 import {getCompetencies,selectCompentencies} from '../actions/seconassesment.action';
 import {groupBy, mapValues, find, map,get} from 'lodash';
-import {groups} from '../actions/seconassesment.action';
+// import {groups} from '../actions/seconassesment.action';
 
 
 
@@ -18,14 +18,14 @@ class CompetencySelection extends Component {
 
   selectCompetencies(comp){
       const {selectCompentencies}=this.props;
-      selectCompentencies(comp.id)
+      selectCompentencies(comp._id)
   }
 
   renderCompetencies (group) {
   
     const {selectedCompentencies}=this.props;
-    let selectedGroup = find (groups, function (o) {
-      return o.id === group[0].groupId;
+    let selectedGroup = find (this.props.groups, function (o) {
+      return o.id === group[0].group.group_id;
     });
 
     return (
@@ -34,7 +34,7 @@ class CompetencySelection extends Component {
         <div className=" com_panel">
           {map (group, comp => {
             return (
-              <div className={`competency ${selectedCompentencies.includes(comp.id)?'selection':''}`} onClick={()=>{this.selectCompetencies(comp)}}>
+              <div className={`competency ${selectedCompentencies.includes(comp._id)?'selection':''}`} onClick={()=>{this.selectCompetencies(comp)}}>
                 {comp.title}
               </div>
             );
@@ -47,8 +47,8 @@ class CompetencySelection extends Component {
 
   render () {
  
-    const {competencies} = this.props;
-    const groups = groupBy (competencies, 'groupId');
+    const {competency} = this.props;
+    const groups = groupBy (competency, 'groupId');
 
     const renderer = [];
     mapValues (groups, group => {
