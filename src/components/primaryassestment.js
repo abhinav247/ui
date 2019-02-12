@@ -6,16 +6,18 @@ import {
   onAddParticipant,
   updateParticipant,
   deleteParticipant,
-  
+  uploadFiles
 } from "../actions/assestments.action";
-import {sendemail} from '../actions/assestments.action';
-
+import { sendemail } from "../actions/assestments.action";
+import {get} from 'lodash';
 
 class Primary extends Component {
   constructor(props) {
     super(props);
     this.addParticipant = this.addParticipant.bind(this);
-    this.sendMail=this.sendMail.bind(this);
+    this.sendMail = this.sendMail.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+    this.afterFileSelection = this.afterFileSelection.bind(this);
   }
 
   addParticipant(assestmentId) {
@@ -23,9 +25,20 @@ class Primary extends Component {
     onAddParticipant(assestmentId);
   }
 
+  uploadFile() {
+    let el = document.getElementById("selectedFile");
+    el.click();
+  }
 
-  sendMail(participantId){
-    const {sendemail}=this.props;
+  afterFileSelection(event,assesmentId) {
+    debugger;
+    const { uploadFiles } = this.props;
+    let file = event.target.files[0];
+    uploadFiles(file,assesmentId)
+  }
+
+  sendMail(participantId) {
+    const { sendemail } = this.props;
     sendemail(participantId);
   }
 
@@ -34,7 +47,8 @@ class Primary extends Component {
       getComponent,
       fieldEditing,
       updateParticipant,
-      deleteParticipant
+      deleteParticipant,
+      file
     } = this.props;
     const { primary, _id } = this.props.assesment;
     const { startDate, endDate, no_response, participants } = primary;
@@ -69,7 +83,18 @@ class Primary extends Component {
             >
               Add Participant
             </button>
-            <button className="upload_details">Product Designer.pdf</button>
+
+            <input
+              type="file"
+              id="selectedFile"
+              className="upload_details"
+              style={{ visibility: "hidden " }}
+              onChange={e=>{this.afterFileSelection(e,_id)}}
+            />
+
+            <button className="upload_details" onClick={this.uploadFile}>
+              { file!==null?file:'Upload Job Description'}
+            </button>
           </div>
         </div>
         <div className="participant-listing row">
@@ -103,7 +128,7 @@ class Primary extends Component {
                         <button
                           className="report"
                           onClick={e => {
-                            this.sendMail(participant._id)
+                            this.sendMail(participant._id);
                             // updateParticipant(
                             //   participant._id,
                             //   "mail_status",
@@ -142,11 +167,16 @@ class Primary extends Component {
 }
 
 export default connect(
-  null,
+  state=>{
+    return {
+      file:get(state,'secondassessment.fileattached')
+    }
+  },
   {
     onAddParticipant,
     updateParticipant,
     deleteParticipant,
-    sendemail
+    sendemail,
+    uploadFiles
   }
 )(Primary);

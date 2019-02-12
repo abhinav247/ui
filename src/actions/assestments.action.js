@@ -7,7 +7,8 @@ import {
   UPDATE_FIELD,
   UPDATE_EVENT_FIELD,
   UPDATE_PARTICIPANT,
-  UPDATE_PARTICIPANT_FIELD
+  UPDATE_PARTICIPANT_FIELD,
+  FILE_ATTACHED
 } from "./actionTypes";
 import { beginAjaxCall, endAjaxCall } from "./ajaxstatus.action";
 import moment from "moment";
@@ -41,6 +42,21 @@ export const postResource = (url, content) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(content)
+  };
+
+  return fetch(url, requestOptions).then(res => {
+    return res.json();
+  });
+};
+
+export const uploadFile = (url, content) => {
+  var formData = new FormData();
+
+  formData.append("file", content);
+
+  const requestOptions = {
+    method: "PUT",
+    body: formData
   };
 
   return fetch(url, requestOptions).then(res => {
@@ -98,10 +114,7 @@ export const addAssesment = () => dispatch => {
     });
 };
 
-
-
-
-export const sendemail= (participantId)= dispatch => {
+export const sendemail = participantId => dispatch => {
   dispatch(beginAjaxCall());
   putResource(`${url}/assessment/sendMail/${participantId}`)
     .then(res => {
@@ -137,8 +150,18 @@ const addassesment = data => {
   return { type: ADD_ASSESTMENT, data };
 };
 
+export const uploadFiles = (file, assesmentId) => dispatch => {
+  dispatch(beginAjaxCall());
+  uploadFile(`${url}/assessment/addjobdesc/${assesmentId}`, file).then(res => {
+    
+    dispatch(fileattached(file));
+    dispatch(endAjaxCall());
+  });
+};
 
-export const deleteassessment= (assesmentId)=> dispatch => {
+const fileattached= file=>{return {type:FILE_ATTACHED,file}}
+
+export const deleteassessment = assesmentId => dispatch => {
   dispatch(beginAjaxCall());
   deleteResource(`${url}/assessment/delete/${assesmentId}`).then(res => {
     dispatch(allassessments(get(res, "data")));
@@ -148,7 +171,10 @@ export const deleteassessment= (assesmentId)=> dispatch => {
 
 export const deleteParticipant = (participantId, assesmentId) => dispatch => {
   dispatch(beginAjaxCall());
-  postResource(`${url}/assessment/deleteprimarypart`,{participants_id:participantId,assessment_id:assesmentId}).then(res => {
+  postResource(`${url}/assessment/deleteprimarypart`, {
+    participants_id: participantId,
+    assessment_id: assesmentId
+  }).then(res => {
     dispatch(assessmentUpdated(get(res, "data")));
     dispatch(endAjaxCall());
   });

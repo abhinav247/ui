@@ -83,7 +83,7 @@ class VerticalTabs extends React.PureComponent {
             );
           })}
         </div>
-        <div className="col-md-9">
+        <div className="col-md-9 question_list">
           <Questioners
             selectedComp={selectedComp}
             allquestions={questioners}
